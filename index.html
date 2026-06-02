@@ -1832,59 +1832,24 @@ function downloadSiteHTML(){
     var src = xhr.responseText;
 
     /* Remove any previous restore script */
-    src = src.replace(/<script id="uja-restore-data">[\s\S]*?<\/script>/g, '');
-
-    /* Build restore script with current data */
-    var scData = JSON.parse(JSON.stringify(SC));
-    var portData = PORTFOLIO.map(function(p){
-      return {id:p.id,name:p.name,cat:p.cat,catName:p.catName,
-              area:p.area,year:p.year,color:p.color,desc:p.desc||'',imgs:p.imgs};
-    });
-
-    var restoreScript = '<script id="uja-restore-data">\n'
-      + '(function(){\n'
-      + 'try{\n'
-      + 'var d=' + JSON.stringify({
-          SC: scData,
-          PORTFOLIO: portData,
-          PROJECTS: PROJECTS,
-          TEAM_MEMBERS: TEAM_MEMBERS,
-          FINANCE: FINANCE
-        }) + ';\n'
-      + 'document.addEventListener("DOMContentLoaded",function(){\n'
-      + '  try{\n'
-      + '    Object.assign(SC,d.SC);\n'
-      + '    PORTFOLIO=d.PORTFOLIO;\n'
-      + '    PROJECTS=d.PROJECTS;\n'
-      + '    TEAM_MEMBERS=d.TEAM_MEMBERS;\n'
-      + '    SC.team=d.TEAM_MEMBERS.map(function(m){return {name:m.name,role:m.role,color:m.color,init:m.init};});\n'
-      + '    FINANCE=d.FINANCE;\n'
-      + '    if(SC.accentColor) document.documentElement.style.setProperty("--accent",SC.accentColor);\n'
-      + '  }catch(e){}\n'
-      + '});\n'
-      + '}catch(e){}\n'
-      + '})();\n'
-      + '<\/script>';
-
-    src = src.replace('</body>', restoreScript + '\n</body>');
-
-    var blob = new Blob([src], {type:'text/html;charset=utf-8'});
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'index.html';
-    a.click();
-    URL.revokeObjectURL(a.href);
-    toast('index.html 已下載');
-  };
-  xhr.onerror = function(){
-    toast('下載失敗，請重試');
-  };
-  xhr.send();
-}
-
-function navPrivacy(){goPage('privacy');}
-function navTerms(){goPage('terms');}
-function navPort(i){goPage('port-detail',i);}
+    src = src.replace(/
+<script id="uja-restore-data">
+(function(){
+try{
+var d={"SC":{"accentColor":"#D4815A","bUja":"UJA","bStudio":"STUDIO","bArch":"ARCHITECT","hero":{"eyebrow":"室內 · 建築設計","title":"以空間敘事，讓<em>生活</em>成為家","desc":"我們相信每一個空間都有靈魂。透過人文關懷與自然美學，將您的生活願景轉化為具體的居住詩篇。","cta1":"探索作品集","cta2":"預約諮詢"},"stats":[{"num":"87","lbl":"完成專案"},{"num":"12","lbl":"年設計經驗"},{"num":"24","lbl":"獲獎紀錄"},{"num":"100%","lbl":"客戶滿意度"}],"mosaic":[{"bg":"#C8A882","span":true,"icon":"ti-home-2","lbl":"住宅設計","tc":"rgba(250,248,244,.9)","op":""},{"bg":"#B5C4A8","span":false,"icon":"ti-building-store","lbl":"商業空間","tc":"#5C4A35","op":""},{"bg":"#F0C4A8","span":false,"icon":"ti-building-arch","lbl":"建築規劃","tc":"#5C4A35","op":""},{"bg":"#5C4A35","span":false,"icon":"ti-armchair","lbl":"傢俱陳設","tc":"rgba(250,248,244,.9)","op":".82"},{"bg":"#8B6E4E","span":false,"icon":"ti-trees","lbl":"景觀整合","tc":"rgba(250,248,244,.9)","op":".88"}],"services":[{"icon":"ti-building","title":"住宅室內設計","desc":"以居住者的生活脈絡為核心，融入自然材質與溫暖色調，打造獨一無二的居家空間。"},{"icon":"ti-layout","title":"商業空間規劃","desc":"理解品牌精神與使用者行為，設計出兼具美感與機能的商業場所。"},{"icon":"ti-ruler","title":"建築外觀設計","desc":"回應基地環境與人文脈絡，創造與土地對話的建築形式。"},{"icon":"ti-sofa","title":"傢俱選配與軟裝","desc":"精選國內外家具品牌，搭配織品與植栽，為空間注入生命力。"}],"process":[{"num":"01","title":"初步諮詢","desc":"了解生活方式、預算與時程，建立合作基礎。"},{"num":"02","title":"概念發展","desc":"提出設計概念方向與參考意象，確認風格定調。"},{"num":"03","title":"施工圖設計","desc":"完整的施工圖面、材料表與報價單。"},{"num":"04","title":"監工驗收","desc":"全程工地監督與品質管理，直到您滿意為止。"}],"team":[],"cta":{"title":"讓我們一起打造<em>屬於您的空間</em>","sub":"免費初步諮詢，深入了解您的設計需求","btn":"立即預約諮詢 →"},"vis":{"hero":true,"stats":true,"services":true,"process":true,"team":true,"cta":true},"footer":{"tagline":"以人文關懷為本，自然美學為魂。","address":"台中市西屯區福玄路136號","phone":"04-2299-0259","email":"taiarch001198@gmail.com","instagram":"@uja_studio","hours":[{"day":"週一 ~ 週五","time":"08:30 – 18:00","closed":false},{"day":"週六、週日及國定假日","time":"休息","closed":true},{"day":"","time":"","closed":false}],"copyright":"© 2025 UJA STUDIO ARCHITECT　版權所有","privacy":{"title":"隱私政策","content":"<h2>隱私政策</h2><p>UJA STUDIO ARCHITECT 重視您的隱私權，本政策說明我們如何蒐集、使用及保護您的個人資料。</p><h3>一、資料蒐集範圍</h3><p>當您填寫聯絡表單或預約諮詢時，我們可能蒐集您的姓名、電話、電子信箱及設計需求等資訊。</p><h3>二、資料使用目的</h3><p>所蒐集之個人資料僅用於提供設計諮詢服務及回覆您的詢問。</p><h3>三、資料保護措施</h3><p>本公司採取適當的技術及管理措施，防止您的個人資料遭到未授權存取或洩漏。我們不會將資料出售給第三方。</p><h3>四、聯絡我們</h3><p>如對本政策有任何疑問，請透過 hello@ujastudio.tw 與我們聯繫。</p><p class=\"legal-date\">最後更新日期：2025年1月</p>"},"terms":{"title":"服務條款","content":"<h2>服務條款</h2><p>請您在使用 UJA STUDIO ARCHITECT 服務前，詳細閱讀以下條款。</p><h3>一、服務說明</h3><p>本公司提供室內設計、建築設計及商業空間規劃等專業服務，範圍依個案合約為準。</p><h3>二、著作權聲明</h3><p>所有設計成果之著作權均屬本公司所有，未經書面授權不得複製或商業使用。</p><h3>三、保密義務</h3><p>本公司對客戶資訊負有保密義務，未經同意不得向第三方揭露。</p><h3>四、費用與付款</h3><p>設計費用依合約約定支付，未依約付款本公司有權暫停服務。</p><h3>五、條款修改</h3><p>本公司保留修改本條款之權利，修改後將公告於本網站。</p><p class=\"legal-date\">最後更新日期：2025年1月</p>"}}},"PORTFOLIO":[],"PROJECTS":[],"TEAM_MEMBERS":[],"FINANCE":{"monthly":[],"pending":0,"note":""}};
+document.addEventListener("DOMContentLoaded",function(){
+  try{
+    Object.assign(SC,d.SC);
+    PORTFOLIO=d.PORTFOLIO;
+    PROJECTS=d.PROJECTS;
+    TEAM_MEMBERS=d.TEAM_MEMBERS;
+    SC.team=d.TEAM_MEMBERS.map(function(m){return {name:m.name,role:m.role,color:m.color,init:m.init};});
+    FINANCE=d.FINANCE;
+    if(SC.accentColor) document.documentElement.style.setProperty("--accent",SC.accentColor);
+  }catch(e){}
+});
+}catch(e){}
+})();
 </script>
 </body>
 </html>
