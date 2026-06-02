@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UJA STUDIO · ARCHITECT</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --sand:#F5F0E8;--sand2:#EDE6D6;--clay:#C8A882;--clay-dark:#8B6E4E;
+  --earth:#5C4A35;--olive:#7A8C6E;--olive-light:#B5C4A8;
+  --charcoal:#2C2820;--warm-white:#FAF8F4;--accent:#D4815A;
+  --accent-light:#F0C4A8;--muted:#9E917E;--border:rgba(140,110,78,0.18);
+  --danger:#C04A35;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,serif;background:var(--warm-white);color:var(--charcoal);}
+#app{min-height:100vh;}
+.pg{display:none;}.pg.on{display:block;}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 30px;background:var(--warm-white);border-bottom:.5px solid var(--border);position:sticky;top:0;z-index:100;}
+.logo{font-size:15px;letter-spacing:2px;cursor:pointer;display:flex;align-items:baseline;}
+.logo-uja{color:var(--earth);}
+.logo-studio{color:var(--accent);}
+.logo-sep{color:var(--clay);font-size:11px;margin:0 5px;}
+.logo-arch{color:var(--muted);font-size:11px;letter-spacing:1.5px;}
+.navlinks{display:flex;align-items:center;gap:18px;}
+.nl{font-size:13px;color:var(--muted);cursor:pointer;border:none;background:none;font-family:Georgia,serif;transition:color .2s;}
+.nl:hover,.nl.act{color:var(--earth);}
+.btn-border{background:none;border:.5px solid var(--clay);color:var(--earth);padding:7px 14px;font-size:12px;cursor:pointer;font-family:Georgia,serif;border-radius:2px;}
+.btn-border:hover{background:var(--sand);}
+.btn-fill{background:var(--accent);color:var(--warm-white);border:none;padding:7px 14px;font-size:12px;cursor:pointer;font-family:Georgia,serif;border-radius:2px;}
+.btn-fill:hover{background:var(--clay-dark);}
+.loginbg{min-height:calc(100vh - 57px);display:flex;align-items:center;justify-content:center;padding:40px 20px;background:rgba(44,40,32,.5);}
+.lcard{background:var(--warm-white);border:.5px solid var(--border);border-radius:4px;padding:38px 34px;width:360px;}
+.fld{display:flex;flex-direction:column;gap:5px;margin-bottom:13px;}
+.fld label{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-family:sans-serif;}
+.fi{width:100%;border:.5px solid var(--border);border-radius:2px;padding:9px 11px;font-size:13px;background:var(--sand);color:var(--charcoal);font-family:Georgia,serif;}
+.fi:focus{outline:none;border-color:var(--clay);}
+.btnfull{width:100%;background:var(--earth);color:var(--warm-white);border:none;padding:12px;font-size:13px;cursor:pointer;font-family:Georgia,serif;border-radius:2px;}
+.btnfull:hover{background:var(--clay-dark);}
+.lerr{background:#FDF0EE;border:.5px solid rgba(192,74,53,.3);border-radius:2px;padding:9px 12px;font-size:12px;color:var(--danger);margin-bottom:12px;font-family:sans-serif;display:none;}
+.login-hint{text-align:center;margin-top:16px;font-size:11px;color:var(--muted);font-family:sans-serif;padding:10px;background:var(--sand);border-radius:2px;cursor:pointer;border:.5px solid transparent;}
+.login-hint:hover{border-color:var(--clay);}
+.hero{display:grid;grid-template-columns:1fr 1fr;background:var(--sand);}
+.herotext{padding:52px 38px;display:flex;flex-direction:column;justify-content:center;}
+.eyebrow{font-size:11px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;font-family:sans-serif;margin-bottom:16px;}
+.herotitle{font-size:36px;font-weight:normal;line-height:1.3;margin-bottom:16px;}
+.herotitle em{font-style:italic;color:var(--clay-dark);}
+.herodesc{font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:26px;}
+.ctarow{display:flex;gap:10px;}
+.cta-link-fill{display:inline-block;background:var(--accent);color:var(--warm-white);padding:11px 24px;font-size:13px;font-family:Georgia,serif;border-radius:2px;border:none;cursor:pointer;text-decoration:none;}
+.cta-link-fill:hover{background:var(--clay-dark);}
+.cta-link-outline{display:inline-block;background:transparent;color:var(--earth);border:.5px solid var(--clay);padding:11px 24px;font-size:13px;font-family:Georgia,serif;border-radius:2px;cursor:pointer;text-decoration:none;}
+.cta-link-outline:hover{background:var(--sand2);}
+.cta-link-white{display:inline-block;background:var(--warm-white);color:var(--earth);padding:11px 24px;font-size:13px;font-family:Georgia,serif;border-radius:2px;border:none;cursor:pointer;text-decoration:none;white-space:nowrap;}
+.statsbar{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:.5px solid var(--border);}
+.statitem{padding:22px 26px;border-right:.5px solid var(--border);text-align:center;}
+.statitem:last-child{border-right:none;}
+.statnum{font-size:26px;font-style:italic;color:var(--clay-dark);}
+.statlbl{font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:3px;font-family:sans-serif;}
+.sec{padding:52px 38px;}
+.sectitle{font-size:27px;font-weight:normal;margin-bottom:7px;}
+.sectitle em{font-style:italic;color:var(--clay-dark);}
+.teamsec{background:var(--sand);padding:52px 38px;}
+.portgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.portcard{background:var(--sand);border:.5px solid var(--border);border-radius:2px;overflow:hidden;cursor:pointer;transition:transform .2s;}
+.portcard:hover{transform:translateY(-3px);}
+.site-footer{background:var(--charcoal);color:var(--warm-white);padding:46px 38px 26px;}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:38px;margin-bottom:32px;}
+.footer-col-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:sans-serif;color:var(--accent);margin-bottom:14px;}
+.footer-info-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:11px;}
+.footer-info-row i{font-size:14px;color:var(--clay);margin-top:2px;flex-shrink:0;}
+.footer-info-text{font-size:12px;color:rgba(250,248,244,.75);line-height:1.7;}
+.footer-hours-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:.5px solid rgba(250,248,244,.08);font-size:12px;}
+.footer-hours-row:last-child{border-bottom:none;}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:22px;border-top:.5px solid rgba(250,248,244,.1);font-size:11px;color:rgba(250,248,244,.3);font-family:sans-serif;}
+.appshell{display:flex;height:calc(100vh - 57px);overflow:hidden;}
+.sidebar{width:185px;background:var(--sand);border-right:.5px solid var(--border);padding:14px 0;flex-shrink:0;overflow-y:auto;}
+.sb-brand{padding:12px 15px 14px;border-bottom:.5px solid var(--border);margin-bottom:6px;}
+.sb-brand-name{font-size:12px;letter-spacing:1.5px;color:var(--earth);}
+.sb-brand-name span{color:var(--accent);}
+.sb-brand-sub{font-size:9px;letter-spacing:2px;color:var(--muted);font-family:sans-serif;margin-top:2px;text-transform:uppercase;}
+.sb-session{display:flex;align-items:center;gap:6px;margin-top:8px;padding:5px 8px;background:rgba(122,140,110,.1);border-radius:2px;}
+.sb-dot{width:6px;height:6px;border-radius:50%;background:var(--olive);flex-shrink:0;}
+.sb-txt{font-size:10px;color:var(--olive);font-family:sans-serif;}
+.sblbl{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;font-family:sans-serif;padding:5px 15px 3px;}
+.sbitem{display:flex;align-items:center;gap:8px;padding:9px 15px;font-size:13px;color:var(--muted);cursor:pointer;border-left:2px solid transparent;}
+.sbitem:hover{color:var(--charcoal);background:var(--sand2);}
+.sbitem.on{color:var(--earth);background:var(--sand2);border-left-color:var(--accent);}
+.mainarea{flex:1;padding:22px 26px;min-width:0;}
+.ed-grid{display:grid;grid-template-columns:250px 1fr;gap:14px;align-items:start;height:calc(100vh - 57px - 44px - 60px);}
+.ed-panel{display:flex;flex-direction:column;gap:0;}
+.ed-group{background:var(--sand);border:.5px solid var(--border);border-radius:3px;overflow:hidden;margin-bottom:1px;}
+.eg-head:hover{background:var(--sand2);}
+.eg-head{padding:10px 13px;font-size:12px;color:var(--charcoal);display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;transition:background .15s;}
+.eg-head i{font-size:13px;color:var(--clay-dark);}
+.eg-body{padding:11px 12px;border-top:.5px solid var(--border);}
+.ef-label{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-family:sans-serif;margin-bottom:4px;}
+.ef-inp{width:100%;border:.5px solid var(--border);border-radius:2px;padding:7px 9px;font-size:12px;background:var(--warm-white);color:var(--charcoal);font-family:Georgia,serif;}
+.ef-inp:focus{outline:none;border-color:var(--clay);}
+.preview-wrap{border:.5px solid var(--border);border-radius:4px;overflow:hidden;height:100%;}
+.preview-bar{background:var(--sand2);padding:8px 13px;border-bottom:.5px solid var(--border);font-size:11px;color:var(--muted);font-family:sans-serif;display:flex;align-items:center;justify-content:space-between;}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:3px;}
+.preview-scroll{overflow-y:auto;height:calc(100% - 37px);scrollbar-width:thin;scrollbar-color:var(--clay) var(--sand2);}
+[data-ek].edon:hover{outline:1.5px dashed var(--clay);outline-offset:3px;}
+[data-ek].edon:focus{outline:2px solid var(--accent);outline-offset:3px;background:rgba(212,129,90,.06);}
+.tog{position:relative;width:34px;height:18px;flex-shrink:0;}
+.tog input{opacity:0;width:0;height:0;}
+.togslider{position:absolute;inset:0;background:var(--sand2);border-radius:10px;cursor:pointer;border:.5px solid var(--border);}
+.togslider:before{content:"";position:absolute;width:13px;height:13px;left:2px;top:2px;background:var(--muted);border-radius:50%;transition:transform .2s,background .2s;}
+input:checked+.togslider{background:rgba(122,140,110,.2);border-color:rgba(181,196,168,.6);}
+input:checked+.togslider:before{transform:translateX(16px);background:var(--olive);}
+.icon-picker-wrap{position:relative;}
+.icon-preview-btn{display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--warm-white);border:.5px solid var(--border);border-radius:2px;cursor:pointer;font-size:12px;color:var(--charcoal);width:100%;}
+.icon-preview-btn i{font-size:16px;color:var(--clay-dark);}
+.icon-dropdown{position:absolute;top:calc(100% + 4px);left:0;width:220px;background:var(--warm-white);border:.5px solid var(--border);border-radius:4px;box-shadow:0 4px 16px rgba(44,40,32,.12);z-index:200;padding:8px;}
+.icon-search{width:100%;border:.5px solid var(--border);border-radius:2px;padding:6px 8px;font-size:11px;background:var(--sand);color:var(--charcoal);margin-bottom:7px;font-family:sans-serif;}
+.icon-search:focus{outline:none;border-color:var(--clay);}
+.icon-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;max-height:150px;overflow-y:auto;}
+.icon-opt{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:2px;cursor:pointer;font-size:16px;color:var(--muted);}
+.icon-opt:hover{background:var(--sand2);color:var(--earth);}
+.icon-opt.sel{background:rgba(212,129,90,.15);color:var(--accent);}
+.color-dot{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;}
+.color-dot:hover,.color-dot.sel{border-color:var(--earth);}
+.qrow{display:grid;grid-template-columns:1.8fr .55fr .75fr .85fr 26px;gap:6px;align-items:center;padding:7px 0;border-bottom:.5px solid var(--border);}
+.qrow.hdr{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-family:sans-serif;}
+.qi{width:100%;border:.5px solid var(--border);border-radius:2px;padding:7px 8px;font-size:12px;background:var(--sand);color:var(--charcoal);font-family:Georgia,serif;}
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;font-family:sans-serif;padding:7px 10px;border-bottom:.5px solid var(--border);text-align:left;font-weight:normal;}
+.tbl td{padding:10px;border-bottom:.5px solid var(--border);font-size:13px;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:var(--sand);}
+.spill{font-size:10px;padding:3px 9px;border-radius:2px;font-family:sans-serif;}
+.sa{background:rgba(122,140,110,.15);color:var(--olive);}
+.sr{background:rgba(212,129,90,.15);color:var(--accent);}
+.sp{background:rgba(140,110,78,.15);color:var(--clay-dark);}
+.ptw{position:relative;height:115px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.ptw img{width:100%;height:100%;object-fit:cover;}
+.pto{position:absolute;inset:0;background:rgba(44,40,32,.5);display:flex;align-items:center;justify-content:center;gap:7px;opacity:0;transition:opacity .2s;}
+.pc:hover .pto{opacity:1;}
+.peb{background:var(--warm-white);border:none;border-radius:2px;padding:5px 11px;font-size:11px;cursor:pointer;color:var(--earth);font-family:sans-serif;}
+.upload-zone{border:1.5px dashed var(--clay);border-radius:4px;padding:28px 18px;text-align:center;cursor:pointer;}
+.upload-zone:hover,.upload-zone.dov{background:var(--sand2);}
+.img-tw{position:relative;width:74px;height:74px;border-radius:3px;overflow:hidden;border:.5px solid var(--border);}
+.img-tw img{width:100%;height:100%;object-fit:cover;}
+.img-rm{position:absolute;top:2px;right:2px;background:rgba(44,40,32,.7);border:none;border-radius:50%;width:17px;height:17px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:white;font-size:10px;}
+.modal-bg{background:rgba(44,40,32,.45);padding:36px 18px;display:flex;align-items:flex-start;justify-content:center;}
+.modal-box{background:var(--warm-white);border:.5px solid var(--border);border-radius:4px;padding:24px;width:460px;}
+.mfrow{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:11px;}
+.mfl{display:flex;flex-direction:column;gap:5px;}
+.mfl label{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-family:sans-serif;}
+.hours-editor-row{display:grid;grid-template-columns:85px 1fr 26px;gap:6px;align-items:center;margin-bottom:6px;}
+.hours-editor-row input{border:.5px solid var(--border);border-radius:2px;padding:6px 8px;font-size:11px;background:var(--warm-white);color:var(--charcoal);font-family:sans-serif;width:100%;}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--earth);color:var(--warm-white);border-radius:3px;padding:10px 16px;font-size:12px;font-family:sans-serif;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;}
+.toast.show{opacity:1;}
+
+.port-detail-hero{height:340px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.port-detail-hero img{width:100%;height:100%;object-fit:cover;}
+.port-thumb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px;}
+.port-thumb-grid img{width:100%;height:88px;object-fit:cover;border-radius:2px;cursor:pointer;border:.5px solid var(--border);transition:opacity .2s;}
+.port-thumb-grid img:hover{opacity:.8;}
+.legal-content h2{font-size:26px;font-weight:normal;margin-bottom:18px;color:var(--earth);}
+.legal-content h3{font-size:15px;font-weight:normal;margin:22px 0 8px;color:var(--clay-dark);border-bottom:.5px solid var(--border);padding-bottom:6px;}
+.legal-content p{font-size:14px;color:var(--muted);line-height:1.9;margin-bottom:10px;}
+
+/* Lightbox */
+#lightbox-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:1000;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .25s;
+}
+#lightbox-overlay.open{opacity:1;pointer-events:all;}
+#lightbox-img{
+  max-width:90vw;max-height:85vh;object-fit:contain;
+  border-radius:2px;box-shadow:0 8px 48px rgba(0,0,0,.6);
+  transition:opacity .2s;
+}
+#lightbox-close{
+  position:fixed;top:18px;right:22px;background:none;border:none;
+  color:rgba(255,255,255,.7);font-size:28px;cursor:pointer;line-height:1;
+  z-index:1001;transition:color .15s;
+}
+#lightbox-close:hover{color:#fff;}
+#lightbox-prev,#lightbox-next{
+  position:fixed;top:50%;transform:translateY(-50%);
+  background:rgba(255,255,255,.1);border:none;color:#fff;
+  font-size:22px;cursor:pointer;padding:14px 18px;border-radius:2px;
+  transition:background .15s;z-index:1001;
+}
+#lightbox-prev{left:16px;}
+#lightbox-next{right:16px;}
+#lightbox-prev:hover,#lightbox-next:hover{background:rgba(255,255,255,.2);}
+#lightbox-counter{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  color:rgba(255,255,255,.5);font-size:12px;font-family:sans-serif;
+  letter-spacing:2px;z-index:1001;
+}
+.port-thumb-grid img{cursor:zoom-in;}
+
+/* ═══════════════════════════════
+   手機版響應式設計
+═══════════════════════════════ */
+@media (max-width: 768px){
+
+  /* NAV */
+  .nav{padding:12px 16px;}
+  .logo-uja,.logo-studio{font-size:14px;}
+  .logo-arch{font-size:10px;}
+  .nl{font-size:12px;}
+  #navauth button{font-size:11px;padding:6px 10px;}
+
+  /* HERO */
+  .hero{grid-template-columns:1fr !important;display:block !important;}
+  .herotext{padding:32px 20px !important;}
+  .herotitle{font-size:26px !important;}
+  .herodesc{font-size:13px !important;}
+  .ctarow{flex-wrap:wrap;}
+  .cta-link-fill,.cta-link-outline{font-size:12px;padding:9px 16px;}
+  .herovis{display:none !important;}
+
+  /* STATS */
+  .statsbar{grid-template-columns:repeat(2,1fr) !important;}
+  .statitem{padding:14px 12px !important;}
+  .statnum{font-size:20px !important;}
+
+  /* SECTIONS */
+  .sec{padding:32px 20px !important;}
+  .sectitle{font-size:22px !important;}
+  .svcgrid{grid-template-columns:1fr !important;}
+  .svcard{padding:16px !important;}
+
+  /* PROCESS STEPS */
+  .psteps{grid-template-columns:repeat(2,1fr) !important;}
+  .pstep{padding:16px !important;}
+  .pnum{font-size:22px !important;}
+
+  /* TEAM */
+  .teamsec{padding:32px 20px !important;}
+  .teamgrid{grid-template-columns:repeat(2,1fr) !important;}
+
+  /* CTA BAND */
+  .ctaband{flex-direction:column !important;padding:28px 20px !important;gap:16px !important;}
+  .ctaband h2{font-size:18px !important;}
+  .cta-link-white{width:100%;text-align:center;}
+
+  /* PORTFOLIO */
+  .portgrid{grid-template-columns:repeat(2,1fr) !important;gap:10px !important;}
+
+  /* FOOTER */
+  .site-footer{padding:32px 20px 20px !important;}
+  .footer-grid{grid-template-columns:1fr !important;gap:24px !important;}
+  .footer-bottom{flex-direction:column;gap:10px;text-align:center;}
+
+  /* PORT DETAIL */
+  .port-detail-hero{height:220px !important;}
+  .port-thumb-grid{grid-template-columns:repeat(3,1fr) !important;}
+  [style*="padding:28px 38px"]{padding:20px 16px !important;}
+  [style*="padding:28px 32px"]{padding:20px 16px !important;flex-direction:column !important;}
+
+  /* LEGAL PAGES */
+  .legal-content h2{font-size:20px !important;}
+  .legal-content h3{font-size:14px !important;}
+
+  /* APP BACKEND */
+  .appshell{flex-direction:column !important;height:auto !important;}
+  .sidebar{width:100% !important;height:auto !important;border-right:none !important;border-bottom:.5px solid var(--border);}
+  .sblbl{display:none;}
+  .sbitem{display:inline-flex !important;padding:8px 12px !important;font-size:11px !important;border-left:none !important;border-bottom:2px solid transparent !important;}
+  .sbitem.on{border-bottom-color:var(--accent) !important;border-left:none !important;}
+  .sidebar .sb-brand{display:none;}
+  #sidebar{display:flex;flex-wrap:wrap;overflow-x:auto;padding:0;}
+  .mainarea{padding:16px !important;max-height:none !important;}
+  .ed-grid{grid-template-columns:1fr !important;height:auto !important;}
+  .preview-wrap{display:none !important;}
+  .ed-panel{max-height:none !important;overflow-y:visible !important;}
+
+  /* CONTACT FORM */
+  [style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr !important;}
+
+  /* LIGHTBOX */
+  #lightbox-prev{left:6px;padding:10px 12px;}
+  #lightbox-next{right:6px;padding:10px 12px;}
+  #lightbox-img{max-width:95vw !important;max-height:80vh !important;}
+
+  /* LOGIN */
+  .loginbg{padding:20px 12px !important;}
+  .lcard{width:100% !important;max-width:360px;padding:28px 20px !important;}
+
+  /* BACK BUTTON */
+  .btn-border,.btn-fill{font-size:12px !important;padding:7px 12px !important;}
+}
+
+@media (max-width: 480px){
+  .portgrid{grid-template-columns:1fr !important;}
+  .psteps{grid-template-columns:1fr !important;}
+  .teamgrid{grid-template-columns:repeat(2,1fr) !important;}
+  .statsbar{grid-template-columns:repeat(2,1fr) !important;}
+  .herotitle{font-size:22px !important;}
+  .port-thumb-grid{grid-template-columns:repeat(2,1fr) !important;}
+}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="toast" class="toast"></div>
+<nav class="nav">
+  <div class="logo" onclick="goPage('home')">
+    <span class="logo-uja" id="nav-uja">UJA</span><span class="logo-studio" id="nav-studio">STUDIO</span><span class="logo-sep">·</span><span class="logo-arch" id="nav-arch">ARCHITECT</span>
+  </div>
+  <div class="navlinks">
+    <button class="nl" id="nl-home" onclick="goPage('home')">關於我們</button>
+    <button class="nl" id="nl-port" onclick="goPage('port')">作品集</button>
+    <button class="nl" id="nl-contact" onclick="goPage('contact')">聯絡我們</button>
+    <div id="navauth"></div>
+  </div>
+</nav>
+<div id="pg-home" class="pg"></div>
+<div id="pg-port" class="pg">
+  <div class="sec">
+    <div class="eyebrow">精選作品</div>
+    <h2 class="sectitle">每一個空間，都是<em>一段故事</em></h2>
+    <div style="display:flex;gap:10px;margin-bottom:24px" id="port-filters">
+      <button class="btn-border" style="padding:5px 14px;font-size:12px" onclick="filterPort('all',this)">全部</button>
+      <button class="btn-border" style="padding:5px 14px;font-size:12px" onclick="filterPort('interior',this)">室內設計</button>
+      <button class="btn-border" style="padding:5px 14px;font-size:12px" onclick="filterPort('architecture',this)">建築設計</button>
+      <button class="btn-border" style="padding:5px 14px;font-size:12px" onclick="filterPort('commercial',this)">商業空間</button>
+    </div>
+    <div class="portgrid" id="pubportgrid"></div>
+  </div>
+  <div id="port-footer"></div>
+</div>
+<div id="pg-contact" class="pg">
+  <div class="sec" style="max-width:520px">
+    <div class="eyebrow">聯絡我們</div>
+    <h2 class="sectitle">開始您的<em>設計旅程</em></h2>
+    <p style="font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:20px">填寫下方表單，我們將在兩個工作天內聯繫您。</p>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px">
+        <div class="fld"><label>姓名</label><input class="fi" placeholder="您的姓名"></div>
+        <div class="fld"><label>電話</label><input class="fi" placeholder="09XX-XXX-XXX"></div>
+      </div>
+      <div class="fld"><label>信箱</label><input class="fi" placeholder="your@email.com"></div>
+      <div class="fld"><label>設計需求類型</label>
+        <select class="fi"><option>住宅室內設計</option><option>商業空間設計</option><option>建築外觀設計</option><option>傢俱軟裝選配</option><option>其他</option></select>
+      </div>
+      <div class="fld"><label>需求說明</label><textarea class="fi" rows="4" placeholder="請描述您的空間現況、期望風格、預算範圍等..." style="resize:vertical"></textarea></div>
+      <button class="btn-fill" style="align-self:flex-start;padding:10px 24px;font-size:13px">送出申請</button>
+    </div>
+  </div>
+  <div id="contact-footer"></div>
+</div>
+<div id="pg-login" class="pg">
+  <div class="loginbg">
+    <div class="lcard">
+      <div style="text-align:center;margin-bottom:6px">
+        <div style="font-size:20px;letter-spacing:2.5px"><span style="color:var(--earth)" id="login-uja">UJA</span><span style="color:var(--accent)" id="login-studio">STUDIO</span></div>
+        <div style="font-size:11px;letter-spacing:2px;color:var(--muted);font-family:sans-serif;margin-top:3px" id="login-arch">ARCHITECT</div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);text-align:center;margin:10px 0 20px;font-family:sans-serif;letter-spacing:.5px;padding-bottom:16px;border-bottom:.5px solid var(--border)">員工後台登入</div>
+      <div class="lerr" id="lerr"><i class="ti ti-alert-circle"></i> 帳號或密碼錯誤</div>
+      <div class="fld"><label>公司帳號</label><input class="fi" id="iu" placeholder="輸入公司帳號"></div>
+      <div class="fld"><label>密碼</label><input class="fi" id="ip" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:13px">
+  <input type="checkbox" id="remember-me" style="width:15px;height:15px;cursor:pointer;accent-color:var(--earth)">
+  <label for="remember-me" style="font-size:12px;color:var(--muted);cursor:pointer;font-family:sans-serif;user-select:none">記住帳號密碼</label>
+</div>
+<button class="btnfull" onclick="doLogin()">登入後台</button>
+      <div class="login-hint" onclick="fill('taiarch001198@gmail.com','650114st')">
+        <div style="font-size:11px;color:var(--charcoal);margin-bottom:2px">示範帳號（點擊填入）</div>
+        <div style="font-size:11px;color:var(--muted)">taiarch001198@gmail.com</div>
+      </div>
+      <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--muted);cursor:pointer;font-family:sans-serif" onclick="goPage('home')">← 返回官網</div>
+    </div>
+  </div>
+</div>
+<div id="pg-app" class="pg">
+  <div class="appshell">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="mainarea" id="mainarea"></div>
+  </div>
+</div>
+
+<!-- Portfolio detail -->
+<div id="pg-port-detail" class="pg"><div id="port-detail-content"></div></div>
+<!-- Privacy -->
+<div id="pg-privacy" class="pg">
+  <div class="sec" style="max-width:720px;margin:0 auto">
+    <div id="privacy-content"></div>
+    <div style="margin-top:28px"><button class="btn-border" onclick="goPage('home')" style="font-size:12px">← 返回首頁</button></div>
+  </div><div id="privacy-footer"></div></div>
+<!-- Terms -->
+<div id="pg-terms" class="pg">
+  <div class="sec" style="max-width:720px;margin:0 auto">
+    <div id="terms-content"></div>
+    <div style="margin-top:28px"><button class="btn-border" onclick="goPage('home')" style="font-size:12px">← 返回首頁</button></div>
+  </div><div id="terms-footer"></div></div>
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox-overlay" onclick="lbClose(event)">
+  <button id="lightbox-close" onclick="lbHide()">✕</button>
+  <button id="lightbox-prev" onclick="lbStep(-1);event.stopPropagation()">&#8249;</button>
+  <img id="lightbox-img" src="" alt="">
+  <button id="lightbox-next" onclick="lbStep(1);event.stopPropagation()">&#8250;</button>
+  <div id="lightbox-counter"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.6.0/jspdf.plugin.autotable.min.js"></script>
+<script>
+var CU='taiarch001198@gmail.com',CP='650114st',loggedIn=false;
+var ALL_ICONS=['ti-home-2','ti-building','ti-building-store','ti-building-arch','ti-building-community','ti-building-skyscraper','ti-tower','ti-castle','ti-armchair','ti-sofa','ti-bed','ti-bath','ti-door','ti-window','ti-stairs','ti-pool','ti-trees','ti-tree','ti-plant','ti-leaf','ti-flower','ti-sun','ti-moon','ti-star','ti-mountain','ti-beach','ti-ruler','ti-ruler-2','ti-pencil','ti-pencil-plus','ti-brush','ti-palette','ti-layout','ti-layout-grid','ti-layout-board','ti-photo','ti-camera','ti-video','ti-eye','ti-heart','ti-diamond','ti-crown','ti-award','ti-medal','ti-certificate','ti-badge','ti-users','ti-user','ti-user-circle','ti-phone','ti-mail','ti-map-pin','ti-map','ti-compass','ti-clock','ti-calendar','ti-briefcase','ti-file','ti-file-invoice','ti-file-text','ti-folder','ti-archive','ti-tool','ti-tools','ti-hammer','ti-shovel','ti-paint','ti-bucket','ti-settings','ti-adjustments','ti-filter','ti-search','ti-check','ti-circle-check','ti-star-filled','ti-heart-filled','ti-bolt','ti-flame','ti-droplet','ti-wind','ti-cloud','ti-rainbow','ti-table','ti-lamp','ti-lamp-2','ti-bulb','ti-candle','ti-wallpaper','ti-texture','ti-color-swatch','ti-artboard','ti-vector'];
+
+/* ── 專案資料 ── */
+var PROJECTS=[
+  {id:1,n:'松山區私宅改造',c:'陳先生夫婦',p:72,s:'active',d:'林柏宇',budget:1800000,note:'預計11月完工'},
+  {id:2,n:'信義區咖啡廳',c:'午後時光有限公司',p:45,s:'review',d:'林柏宇',budget:3200000,note:'等待客戶確認'},
+  {id:3,n:'宜蘭民宿建築',c:'林氏家族',p:88,s:'active',d:'陳雅婷',budget:5600000,note:'進入收尾階段'},
+  {id:4,n:'內湖辦公室規劃',c:'科技新創公司',p:20,s:'pending',d:'陳雅婷',budget:2400000,note:'簽約準備中'}
+];
+var PROJ_STATUS={active:'進行中',review:'待審核',pending:'規劃中'};
+var PROJ_STATUS_CLR={active:'rgba(122,140,110,.15)',review:'rgba(212,129,90,.15)',pending:'rgba(140,110,78,.15)'};
+var PROJ_STATUS_TC={active:'var(--olive)',review:'var(--accent)',pending:'var(--clay-dark)'};
+var editingProjId=null;
+
+/* ── 成員資料 ── */
+var TEAM_MEMBERS=[
+  {id:1,name:'陳雅婷',role:'主持設計師 · 建築師',email:'chen@ujastudio.tw',phone:'0912-345-678',color:'#8B6E4E',init:'陳'},
+  {id:2,name:'林柏宇',role:'資深室內設計師',email:'lin@ujastudio.tw',phone:'0923-456-789',color:'#7A8C6E',init:'林'},
+  {id:3,name:'吳思涵',role:'專案管理 · 客戶服務',email:'wu@ujastudio.tw',phone:'0934-567-890',color:'#D4815A',init:'吳'}
+];
+var editingMemberId=null;
+
+/* ── 財務資料 ── */
+var FINANCE={
+  monthly:[
+    {month:'1月',income:380000,expense:120000},
+    {month:'2月',income:420000,expense:95000},
+    {month:'3月',income:510000,expense:140000},
+    {month:'4月',income:460000,expense:110000},
+    {month:'5月',income:580000,expense:160000},
+    {month:'6月',income:420000,expense:130000}
+  ],
+  pending:300000,
+  note:'以上為模擬數據，可依實際情況修改'
+};
+
+var PORTFOLIO=[
+  {id:1,name:'松山區私宅',cat:'interior',catName:'室內設計',area:'68坪',year:'2024',imgs:[],color:'#C8A882'},
+  {id:2,name:'宜蘭民宿建築',cat:'architecture',catName:'建築設計',area:'120坪',year:'2023',imgs:[],color:'#7A8C6E'},
+  {id:3,name:'信義區咖啡廳',cat:'commercial',catName:'商業空間',area:'35坪',year:'2024',imgs:[],color:'#D4815A'},
+  {id:4,name:'大安區透天厝',cat:'interior',catName:'室內設計',area:'92坪',year:'2023',imgs:[],color:'#B8A898'},
+  {id:5,name:'內湖辦公室設計',cat:'commercial',catName:'商業空間',area:'80坪',year:'2024',imgs:[],color:'#A8B89A'},
+  {id:6,name:'台中透天建案',cat:'architecture',catName:'建築設計',area:'200坪',year:'2022',imgs:[],color:'#C4A882'}
+];
+var SC={
+  accentColor:'#D4815A',
+  bUja:'UJA',bStudio:'STUDIO',bArch:'ARCHITECT',
+  hero:{eyebrow:'室內 · 建築設計',title:'以空間敘事，讓<em>生活</em>成為家',desc:'我們相信每一個空間都有靈魂。透過人文關懷與自然美學，將您的生活願景轉化為具體的居住詩篇。',cta1:'探索作品集',cta2:'預約諮詢'},
+  stats:[{num:'87',lbl:'完成專案'},{num:'12',lbl:'年設計經驗'},{num:'24',lbl:'獲獎紀錄'},{num:'100%',lbl:'客戶滿意度'}],
+  mosaic:[
+    {bg:'#C8A882',span:true,icon:'ti-home-2',lbl:'住宅設計',tc:'rgba(250,248,244,.9)',op:''},
+    {bg:'#B5C4A8',span:false,icon:'ti-building-store',lbl:'商業空間',tc:'#5C4A35',op:''},
+    {bg:'#F0C4A8',span:false,icon:'ti-building-arch',lbl:'建築規劃',tc:'#5C4A35',op:''},
+    {bg:'#5C4A35',span:false,icon:'ti-armchair',lbl:'傢俱陳設',tc:'rgba(250,248,244,.9)',op:'.82'},
+    {bg:'#8B6E4E',span:false,icon:'ti-trees',lbl:'景觀整合',tc:'rgba(250,248,244,.9)',op:'.88'}
+  ],
+  services:[
+    {icon:'ti-building',title:'住宅室內設計',desc:'以居住者的生活脈絡為核心，融入自然材質與溫暖色調，打造獨一無二的居家空間。'},
+    {icon:'ti-layout',title:'商業空間規劃',desc:'理解品牌精神與使用者行為，設計出兼具美感與機能的商業場所。'},
+    {icon:'ti-ruler',title:'建築外觀設計',desc:'回應基地環境與人文脈絡，創造與土地對話的建築形式。'},
+    {icon:'ti-sofa',title:'傢俱選配與軟裝',desc:'精選國內外家具品牌，搭配織品與植栽，為空間注入生命力。'}
+  ],
+  process:[
+    {num:'01',title:'初步諮詢',desc:'了解生活方式、預算與時程，建立合作基礎。'},
+    {num:'02',title:'概念發展',desc:'提出設計概念方向與參考意象，確認風格定調。'},
+    {num:'03',title:'施工圖設計',desc:'完整的施工圖面、材料表與報價單。'},
+    {num:'04',title:'監工驗收',desc:'全程工地監督與品質管理，直到您滿意為止。'}
+  ],
+  team:[
+    {name:'陳雅婷',role:'主持設計師 · 建築師',color:'#8B6E4E',init:'陳'},
+    {name:'林柏宇',role:'資深室內設計師',color:'#7A8C6E',init:'林'},
+    {name:'吳思涵',role:'專案管理 · 客戶服務',color:'#D4815A',init:'吳'}
+  ],
+  cta:{title:'讓我們一起打造<em>屬於您的空間</em>',sub:'免費初步諮詢，深入了解您的設計需求',btn:'立即預約諮詢 →'},
+  vis:{hero:true,stats:true,services:true,process:true,team:true,cta:true},
+  footer:{
+    tagline:'以人文關懷為本，自然美學為魂。',
+    address:'台北市松山區民生東路三段130號4樓',
+    phone:'02-2345-6789',email:'hello@ujastudio.tw',instagram:'@ujastudio.architect',
+    hours:[{day:'週一 — 週五',time:'10:00 – 18:00'},{day:'週六',time:'11:00 – 17:00'},{day:'週日',time:'休息',closed:true}],
+    copyright:'© 2025 UJA STUDIO ARCHITECT　版權所有',
+    privacy:{title:'隱私政策',content:'<h2>隱私政策</h2><p>UJA STUDIO ARCHITECT 重視您的隱私權，本政策說明我們如何蒐集、使用及保護您的個人資料。</p><h3>一、資料蒐集範圍</h3><p>當您填寫聯絡表單或預約諮詢時，我們可能蒐集您的姓名、電話、電子信箱及設計需求等資訊。</p><h3>二、資料使用目的</h3><p>所蒐集之個人資料僅用於提供設計諮詢服務及回覆您的詢問。</p><h3>三、資料保護措施</h3><p>本公司採取適當的技術及管理措施，防止您的個人資料遭到未授權存取或洩漏。我們不會將資料出售給第三方。</p><h3>四、聯絡我們</h3><p>如對本政策有任何疑問，請透過 hello@ujastudio.tw 與我們聯繫。</p><p class="legal-date">最後更新日期：2025年1月</p>'},
+    terms:{title:'服務條款',content:'<h2>服務條款</h2><p>請您在使用 UJA STUDIO ARCHITECT 服務前，詳細閱讀以下條款。</p><h3>一、服務說明</h3><p>本公司提供室內設計、建築設計及商業空間規劃等專業服務，範圍依個案合約為準。</p><h3>二、著作權聲明</h3><p>所有設計成果之著作權均屬本公司所有，未經書面授權不得複製或商業使用。</p><h3>三、保密義務</h3><p>本公司對客戶資訊負有保密義務，未經同意不得向第三方揭露。</p><h3>四、費用與付款</h3><p>設計費用依合約約定支付，未依約付款本公司有權暫停服務。</p><h3>五、條款修改</h3><p>本公司保留修改本條款之權利，修改後將公告於本網站。</p><p class="legal-date">最後更新日期：2025年1月</p>'}
+  }
+};
+var quoteData={client:'',project:'',type:'住宅室內設計',items:[
+  {desc:'設計規劃費',unit:'式',qty:1,price:120000},
+  {desc:'施工監工費',unit:'坪',qty:45,price:8000},
+  {desc:'軟裝選配服務',unit:'式',qty:1,price:60000}
+]};
+var cs='web-editor',editMode=false,editingPortId=null,openIPicker=null;
+var PAL=['#C8A882','#8B6E4E','#7A8C6E','#B5C4A8','#5C4A35','#D4815A','#F0C4A8','#9E917E','#2C2820','#B5726A','#9B7B5C','#A8B89A','#B8A898','#C4A882','#6B8E6B','#8B9E7D','#D4B896','#E8C4A0','#F5F0E8','#EDE6D6'];
+
+function fill(u,p){document.getElementById('iu').value=u;document.getElementById('ip').value=p;}
+function doLogin(){
+  var u=document.getElementById('iu').value.trim(),p=document.getElementById('ip').value;
+  if(u===CU&&p===CP){
+    loggedIn=true;
+    document.getElementById('lerr').style.display='none';
+    var rem=document.getElementById('remember-me');
+    if(rem&&rem.checked){
+      try{localStorage.setItem('uja_u',u);localStorage.setItem('uja_p',p);}catch(e){}
+    } else {
+      try{localStorage.removeItem('uja_u');localStorage.removeItem('uja_p');}catch(e){}
+    }
+    renderNavAuth();goPage('app');renderSidebar();showSec('web-editor');
+  } else {
+    document.getElementById('lerr').style.display='block';
+  }
+}
+function doLogout(){loggedIn=false;editMode=false;renderNavAuth();goPage('home');}
+function syncBrand(){
+  ['nav-uja','login-uja'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=SC.bUja;});
+  ['nav-studio','login-studio'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=SC.bStudio;});
+  ['nav-arch','login-arch'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=SC.bArch;});
+}
+function renderNavAuth(){
+  var el=document.getElementById('navauth');
+  if(!el)return;
+  el.innerHTML='';
+  if(!loggedIn){
+    var b=document.createElement('button');b.className='btn-border';
+    b.textContent='\u54e1\u5de5\u767b\u5165';b.onclick=function(){goPage('login');};
+    el.appendChild(b);
+  } else {
+    var w=document.createElement('div');w.style.cssText='display:flex;align-items:center;gap:8px';
+    var dot=document.createElement('div');dot.style.cssText='width:8px;height:8px;border-radius:50%;background:var(--olive)';
+    var nm=document.createElement('span');nm.style.cssText='font-size:12px;color:var(--charcoal);font-family:sans-serif';
+    nm.textContent=SC.bUja+SC.bStudio;
+    var db=document.createElement('button');db.className='btn-border';db.textContent='\u5f8c\u53f0';
+    db.onclick=function(){goPage('app');showSec('web-editor');};
+    var lb=document.createElement('button');lb.className='btn-border';
+    lb.style.cssText='padding:7px 9px;color:var(--muted)';lb.textContent='\u767b\u51fa';lb.onclick=doLogout;
+    w.appendChild(dot);w.appendChild(nm);w.appendChild(db);w.appendChild(lb);
+    el.appendChild(w);
+  }
+}
+function goPage(id, data){
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
+  var pg=document.getElementById('pg-'+id);
+  if(!pg) return;
+  pg.classList.add('on');
+  ['home','port','contact'].forEach(function(k){var e=document.getElementById('nl-'+k);if(e)e.classList.remove('act');});
+  window.scrollTo(0,0);
+  if(id==='home'){document.getElementById('nl-home').classList.add('act');renderPubHome();}
+  if(id==='port'){document.getElementById('nl-port').classList.add('act');renderPubPort();document.getElementById('port-footer').innerHTML=buildFooter();}
+  if(id==='contact'){document.getElementById('nl-contact').classList.add('act');document.getElementById('contact-footer').innerHTML=buildFooter();}
+  if(id==='port-detail'&&data!==undefined){renderPortDetail(data);}
+  if(id==='privacy'){renderLegalPage('privacy');}
+  if(id==='terms'){renderLegalPage('terms');}
+}
+function filterPort(cat,btn){
+  document.querySelectorAll('#port-filters button').forEach(function(b){b.style.background='';});
+  btn.style.background='var(--sand2)';
+  document.querySelectorAll('#pubportgrid .portcard').forEach(function(c){c.style.display=(cat==='all'||c.dataset.cat===cat)?'':'none';});
+}
+function mosaicH(mini){
+  var h='<div style="background:var(--sand2);display:grid;grid-template-columns:1fr 1fr;gap:'+(mini?'3px':'5px')+';padding:'+(mini?'13px':'20px')+'">';
+  SC.mosaic.forEach(function(m){
+    h+='<div style="border-radius:3px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:'+(mini?'4px':'8px')+';background:'+m.bg+';height:'+(mini?(m.span?'56px':'42px'):(m.span?'155px':'108px'))+';'+(m.span?'grid-column:1/3;':'')+(m.op?'opacity:'+m.op+';':'')+'color:'+m.tc+'">'
+      +'<i class="ti '+m.icon+'" style="font-size:'+(mini?'13px':'24px')+';opacity:.85"></i>'
+      +'<span style="font-size:'+(mini?'8px':'10px')+';letter-spacing:1.5px;font-family:sans-serif;text-transform:uppercase">'+m.lbl+'</span></div>';
+  });
+  return h+'</div>';
+}
+function buildHome(mini){
+  var h='';
+  if(SC.vis.hero){
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;background:var(--sand)">'
+      +'<div style="padding:'+(mini?'26px 20px':'52px 38px')+';display:flex;flex-direction:column;justify-content:center">'
+      +'<div style="font-size:'+(mini?'8px':'11px')+';letter-spacing:3px;color:var(--accent);text-transform:uppercase;font-family:sans-serif;margin-bottom:'+(mini?'9px':'16px')+'" data-ek="hero_eyebrow">'+SC.hero.eyebrow+'</div>'
+      +'<h1 style="font-size:'+(mini?'18px':'36px')+';font-weight:normal;line-height:1.3;margin-bottom:'+(mini?'9px':'16px')+'" data-ek="hero_title">'+SC.hero.title+'</h1>'
+      +'<p style="font-size:'+(mini?'9px':'14px')+';color:var(--muted);line-height:1.8;margin-bottom:'+(mini?'13px':'26px')+'" data-ek="hero_desc">'+SC.hero.desc+'</p>'
+      +'<div style="display:flex;gap:'+(mini?'6px':'10px')+'">';
+    if(mini){
+      h+='<div style="background:var(--accent);color:var(--warm-white);padding:5px 12px;font-size:9px;border-radius:2px;font-family:sans-serif" data-ek="hero_cta1">'+SC.hero.cta1+'</div>'
+        +'<div style="background:transparent;color:var(--earth);border:.5px solid var(--clay);padding:5px 12px;font-size:9px;border-radius:2px;font-family:sans-serif" data-ek="hero_cta2">'+SC.hero.cta2+'</div>';
+    } else {
+      h+='<a class="cta-link-fill" onclick="goPage(\'port\');return false;" href="#" data-ek="hero_cta1">'+SC.hero.cta1+'</a>'
+        +'<a class="cta-link-outline" onclick="goPage(\'contact\');return false;" href="#" data-ek="hero_cta2">'+SC.hero.cta2+'</a>';
+    }
+    h+='</div></div>'+mosaicH(mini)+'</div>';
+  }
+  if(SC.vis.stats){
+    h+='<div style="display:grid;grid-template-columns:repeat(4,1fr);border-bottom:.5px solid var(--border)">';
+    SC.stats.forEach(function(s,i){
+      h+='<div style="padding:'+(mini?'12px':'22px 26px')+';text-align:center;border-right:.5px solid var(--border)">'
+        +'<div style="font-size:'+(mini?'15px':'26px')+';font-style:italic;color:var(--clay-dark)" data-ek="stat_'+i+'_num">'+s.num+'</div>'
+        +'<div style="font-size:'+(mini?'8px':'10px')+';color:var(--muted);letter-spacing:1px;margin-top:2px;font-family:sans-serif" data-ek="stat_'+i+'_lbl">'+s.lbl+'</div></div>';
+    });
+    h+='</div>';
+  }
+  if(SC.vis.services){
+    h+='<div style="padding:'+(mini?'20px':'52px 38px')+'">'
+      +'<div style="font-size:'+(mini?'8px':'11px')+';letter-spacing:3px;color:var(--accent);text-transform:uppercase;font-family:sans-serif;margin-bottom:6px">服務項目</div>'
+      +'<h2 style="font-size:'+(mini?'14px':'27px')+';font-weight:normal;margin-bottom:14px">我們提供的<em style="font-style:italic;color:var(--clay-dark)">完整服務</em></h2>'
+      +'<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:'+(mini?'7px':'14px')+'">';
+    SC.services.forEach(function(s,i){
+      h+='<div style="padding:'+(mini?'10px':'22px')+';background:var(--sand);border:.5px solid var(--border);border-radius:2px">'
+        +'<div style="font-size:'+(mini?'13px':'20px')+';color:var(--clay-dark);margin-bottom:6px"><i class="ti '+s.icon+'"></i></div>'
+        +'<div style="font-size:'+(mini?'9px':'15px')+';margin-bottom:4px" data-ek="svc_'+i+'_title">'+s.title+'</div>'
+        +'<div style="font-size:'+(mini?'8px':'12px')+';color:var(--muted);line-height:1.6" data-ek="svc_'+i+'_desc">'+s.desc+'</div></div>';
+    });
+    h+='</div></div>';
+  }
+  if(SC.vis.process){
+    h+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)">';
+    SC.process.forEach(function(p,i){
+      h+='<div style="background:var(--warm-white);padding:'+(mini?'12px':'26px 20px')+'">'
+        +'<div style="font-size:'+(mini?'18px':'30px')+';font-style:italic;color:var(--accent-light);margin-bottom:5px" data-ek="proc_'+i+'_num">'+p.num+'</div>'
+        +'<div style="font-size:'+(mini?'9px':'13px')+';margin-bottom:5px" data-ek="proc_'+i+'_title">'+p.title+'</div>'
+        +'<div style="font-size:'+(mini?'8px':'12px')+';color:var(--muted);line-height:1.6" data-ek="proc_'+i+'_desc">'+p.desc+'</div></div>';
+    });
+    h+='</div>';
+  }
+  if(SC.vis.team){
+    h+='<div style="background:var(--sand);padding:'+(mini?'20px':'52px 38px')+'">'
+      +'<div style="text-align:center;margin-bottom:'+(mini?'14px':'26px')+'">'
+      +'<div style="font-size:'+(mini?'8px':'11px')+';letter-spacing:3px;color:var(--accent);text-transform:uppercase;font-family:sans-serif;margin-bottom:5px">設計團隊</div>'
+      +'<h2 style="font-size:'+(mini?'14px':'27px')+';font-weight:normal">以<em style="font-style:italic;color:var(--clay-dark)">熱忱</em>打造空間的人們</h2></div>'
+      +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:'+(mini?'12px':'22px')+'">';
+    SC.team.forEach(function(m,i){
+      h+='<div style="text-align:center">'
+        +'<div style="width:'+(mini?'34px':'66px')+';height:'+(mini?'34px':'66px')+';border-radius:50%;background:'+m.color+';display:flex;align-items:center;justify-content:center;font-size:'+(mini?'12px':'22px')+';font-style:italic;color:var(--warm-white);margin:0 auto '+(mini?'7px':'12px')+'">'+m.init+'</div>'
+        +'<div style="font-size:'+(mini?'9px':'14px')+'" data-ek="team_'+i+'_name">'+m.name+'</div>'
+        +'<div style="font-size:'+(mini?'8px':'11px')+';color:var(--muted);margin-top:2px;font-family:sans-serif" data-ek="team_'+i+'_role">'+m.role+'</div></div>';
+    });
+    h+='</div></div>';
+  }
+  if(SC.vis.cta){
+    h+='<div style="background:var(--earth);color:var(--warm-white);padding:'+(mini?'20px':'44px 38px')+';display:flex;justify-content:space-between;align-items:center">'
+      +'<div><div style="font-size:'+(mini?'12px':'23px')+';font-weight:normal" data-ek="cta_title">'+SC.cta.title+'</div>'
+      +'<div style="font-size:'+(mini?'8px':'12px')+';margin-top:4px;opacity:.7" data-ek="cta_sub">'+SC.cta.sub+'</div></div>';
+    if(mini){h+='<div style="background:var(--warm-white);color:var(--earth);padding:5px 12px;font-size:9px;border-radius:2px;font-family:sans-serif;white-space:nowrap" data-ek="cta_btn">'+SC.cta.btn+'</div>';}
+    else{h+='<a class="cta-link-white" onclick="goPage(\'contact\');return false;" href="#" data-ek="cta_btn">'+SC.cta.btn+'</a>';}
+    h+='</div>';
+  }
+  if(!mini) h+=buildFooter();
+  return h;
+}
+function renderPubHome(){document.getElementById('pg-home').innerHTML=buildHome(false);}
+function buildFooter(){
+  var f=SC.footer;
+  var h='<footer class="site-footer"><div class="footer-grid">';
+  h+='<div><div style="display:flex;align-items:baseline;gap:0;margin-bottom:11px">';
+  h+='<span style="font-size:15px;letter-spacing:2px;color:var(--earth)">'+SC.bUja+'</span>';
+  h+='<span style="font-size:15px;letter-spacing:2px;color:var(--accent)">'+SC.bStudio+'</span>';
+  h+='<span style="font-size:11px;color:var(--clay);margin:0 5px">\u00b7</span>';
+  h+='<span style="font-size:11px;letter-spacing:1.5px;color:var(--muted)">'+SC.bArch+'</span>';
+  h+='</div>';
+  h+='<p style="font-size:12px;color:rgba(250,248,244,.5);line-height:1.8;max-width:200px">'+f.tagline+'</p>';
+  h+='<div style="display:flex;gap:13px;margin-top:17px">';
+  h+='<a style="color:rgba(250,248,244,.4);font-size:19px;cursor:pointer"></a>';
+  h+='</div></div>';
+  h+='<div><div class="footer-col-title">\u806f\u7d61\u8cc7\u8a0a</div>';
+  h+='<div class="footer-info-row"><span style="font-size:14px;color:var(--clay);margin-top:2px;flex-shrink:0">\u25ce</span><span class="footer-info-text">'+f.address+'</span></div>';
+  h+='<div class="footer-info-row"><span style="font-size:14px;color:var(--clay);margin-top:2px;flex-shrink:0">\u25ce</span><span class="footer-info-text">'+f.phone+'</span></div>';
+  h+='<div class="footer-info-row"><span style="font-size:14px;color:var(--clay);margin-top:2px;flex-shrink:0">\u25ce</span><span class="footer-info-text">'+f.email+'</span></div>';
+  h+='<div class="footer-info-row"><span style="font-size:14px;color:var(--clay);margin-top:2px;flex-shrink:0">\u25ce</span><span class="footer-info-text">'+f.instagram+'</span></div>';
+  h+='</div>';
+  h+='<div><div class="footer-col-title">\u71df\u696d\u6642\u9593</div>';
+  f.hours.forEach(function(hr){
+    h+='<div class="footer-hours-row">';
+    h+='<span style="color:rgba(250,248,244,.55);font-family:sans-serif;font-size:12px">'+hr.day+'</span>';
+    if(hr.closed){h+='<span style="color:rgba(250,248,244,.3);font-style:italic;font-size:12px">\u4f11\u606f</span>';}
+    else{h+='<span style="color:rgba(250,248,244,.85);font-size:12px">'+hr.time+'</span>';}
+    h+='</div>';
+  });
+  h+='</div></div>';
+  h+='<div class="footer-bottom">';
+  h+='<span>'+f.copyright+'</span>';
+  h+='<div style="display:flex;gap:18px">';
+  h+='<span style="cursor:pointer" onclick="navPrivacy()">\u96b1\u79c1\u653f\u7b56</span>';
+  h+='<span style="cursor:pointer" onclick="navTerms()">\u670d\u52d9\u689d\u6b3e</span>';
+  h+='</div></div>';
+  h+='</footer>';
+  return h;
+}
+function buildFooterMini(){
+  var f=SC.footer;
+  return '<div style="background:var(--charcoal);padding:16px 18px;font-family:sans-serif"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:12px">'
+    +'<div><div style="display:flex;align-items:baseline;margin-bottom:6px"><span style="font-size:9px;letter-spacing:1.5px;color:var(--earth)">'+SC.bUja+'</span><span style="font-size:9px;letter-spacing:1.5px;color:var(--accent)">'+SC.bStudio+'</span><span style="font-size:7px;color:var(--clay);margin:0 3px">·</span><span style="font-size:7px;letter-spacing:1.5px;color:var(--muted)">'+SC.bArch+'</span></div><div style="font-size:8px;color:rgba(250,248,244,.5);line-height:1.7">'+f.tagline+'</div></div>'
+    +'<div><div style="font-size:9px;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:5px">聯絡資訊</div><div style="font-size:8px;color:rgba(250,248,244,.65);line-height:1.7">'+f.address+'<br>'+f.phone+'<br>'+f.email+'</div></div>'
+    +'<div><div style="font-size:9px;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:5px">營業時間</div>'+f.hours.map(function(hr){return '<div style="display:flex;justify-content:space-between;padding:2px 0;border-bottom:.5px solid rgba(250,248,244,.07)"><span style="font-size:8px;color:rgba(250,248,244,.45)">'+hr.day+'</span><span style="font-size:8px;color:'+(hr.closed?'rgba(250,248,244,.25)':'rgba(250,248,244,.75)')+'">'+(hr.closed?'休息':hr.time)+'</span></div>';}).join('')+'</div>'
+    +'</div><div style="border-top:.5px solid rgba(250,248,244,.1);padding-top:8px;font-size:8px;color:rgba(250,248,244,.25);display:flex;justify-content:space-between"><span>'+f.copyright+'</span><span>隱私政策 · 服務條款</span></div></div>';
+}
+function renderPubPort(){
+  var g=document.getElementById('pubportgrid');if(!g)return;
+  var bg=['#D4B896','#8B9E7D','#E8C4A0','#B8A898','#A8B89A','#C4A882'];
+  var h='';
+  PORTFOLIO.forEach(function(p,i){
+    var cov=p.imgs.length
+      ?'<img src="'+p.imgs[0]+'" style="width:100%;height:100%;object-fit:cover">'
+      :'<span style="font-size:12px;color:rgba(250,248,244,.7);font-family:sans-serif">'+p.catName+'</span>';
+    h+='<div class="portcard" data-cat="'+p.cat+'" onclick="navPort('+i+')">' 
+      +'<div style="height:140px;background:'+bg[i%6]+';display:flex;align-items:center;justify-content:center">'+cov+'</div>'
+      +'<div style="padding:14px 16px">'
+      +'<div style="font-size:10px;letter-spacing:2px;color:var(--accent);text-transform:uppercase;font-family:sans-serif">'+p.catName+'</div>'
+      +'<div style="font-size:13px;margin-top:4px">'+p.name+'</div>'
+      +'<div style="font-size:11px;color:var(--muted);margin-top:2px;font-family:sans-serif">'+p.area+' · '+p.year+'</div>'
+      +'<div style="margin-top:8px;font-size:12px;color:var(--accent);font-family:sans-serif">查看詳情 →</div>'
+      +'</div></div>';
+  });
+  g.innerHTML=h;
+}
+
+/* ─── SCSET from inline edit ─── */
+function scSet(k,v){
+  if(k==='hero_eyebrow') SC.hero.eyebrow=v;
+  else if(k==='hero_title') SC.hero.title=v;
+  else if(k==='hero_desc') SC.hero.desc=v;
+  else if(k==='hero_cta1') SC.hero.cta1=v;
+  else if(k==='hero_cta2') SC.hero.cta2=v;
+  else if(k==='cta_title') SC.cta.title=v;
+  else if(k==='cta_sub') SC.cta.sub=v;
+  else if(k==='cta_btn') SC.cta.btn=v;
+  else if(k.startsWith('stat_')){var p=k.split('_');SC.stats[+p[1]][p[2]]=v;}
+  else if(k.startsWith('svc_')){var p=k.split('_');SC.services[+p[1]][p[2]]=v;}
+  else if(k.startsWith('proc_')){var p=k.split('_');SC.process[+p[1]][p[2]]=v;}
+  else if(k.startsWith('team_')){var p=k.split('_');SC.team[+p[1]][p[2]]=v;}
+}
+
+/* ─── SIDEBAR ─── */
+function renderSidebar(){
+  var items=[
+    {id:'web-editor',icon:'ti-pencil',lbl:'網站編輯'},
+    {id:'projects',icon:'ti-briefcase',lbl:'專案管理'},
+    {id:'portfolio',icon:'ti-photo',lbl:'作品集管理'},
+    {id:'quote',icon:'ti-file-invoice',lbl:'報價單'},
+    {sep:true,lbl:'管理功能'},
+    {id:'team',icon:'ti-users',lbl:'成員管理'},
+    {id:'finance',icon:'ti-chart-bar',lbl:'財務報表'},
+    {id:'settings',icon:'ti-settings',lbl:'系統設定'}
+  ];
+  var h='<div class="sb-brand"><div class="sb-brand-name">'+SC.bUja+'<span>'+SC.bStudio+'</span></div><div class="sb-brand-sub">'+SC.bArch+'</div><div class="sb-session"><div class="sb-dot"></div><span class="sb-txt">公司帳號 · 已登入</span></div></div>';
+  items.forEach(function(it){
+    if(it.sep){h+='<div class="sblbl" style="margin-top:9px">'+it.lbl+'</div>';return;}
+    h+='<div class="sbitem'+(it.id===cs?' on':'')+'" onclick="showSec(\''+it.id+'\')"><i class="ti '+it.icon+'" style="font-size:13px"></i>'+it.lbl+'</div>';
+  });
+  h+='<div style="margin-top:13px;padding:0 15px"><button style="width:100%;background:none;border:.5px solid var(--clay);color:var(--earth);padding:6px;font-size:11px;cursor:pointer;font-family:Georgia,serif;border-radius:2px" onclick="doLogout()"><i class="ti ti-home"></i> 返回官網</button></div>';
+  document.getElementById('sidebar').innerHTML=h;
+}
+function showSec(id){cs=id;renderSidebar();closeIP();({
+  'web-editor':renderWE,'projects':renderProjects,'portfolio':renderPortAdmin,
+  'quote':renderQuote,'team':renderTeam,'finance':renderFinance,'settings':renderSettings
+}[id]||function(){})();}
+
+/* ─── ICON PICKER ─── */
+function closeIP(){openIPicker=null;document.querySelectorAll('.icon-dropdown').forEach(function(d){d.remove();});}
+function showIP(btnId,cur,cb){
+  closeIP();
+  var btn=document.getElementById(btnId);if(!btn)return;
+  var sid='is'+Date.now(),gid='ig'+btnId;
+  var d=document.createElement('div');d.className='icon-dropdown';
+  /* build with DOM to avoid quote-escaping issues */
+  var searchInp=document.createElement('input');
+  searchInp.className='icon-search';searchInp.placeholder='搜尋圖示...';searchInp.id=sid;
+  searchInp.oninput=function(){filtIcons(this.value,gid);};
+  var grid=document.createElement('div');grid.className='icon-grid';grid.id=gid;
+  ALL_ICONS.forEach(function(ic){
+    var opt=document.createElement('div');
+    opt.className='icon-opt'+(ic===cur?' sel':'');
+    opt.title=ic;
+    opt.innerHTML='<i class="ti '+ic+'"></i>';
+    opt.onclick=function(){cb(ic);closeIP();};
+    grid.appendChild(opt);
+  });
+  d.appendChild(searchInp);d.appendChild(grid);
+  btn.appendChild(d);openIPicker=btnId;
+  setTimeout(function(){searchInp.focus();},50);
+  document.addEventListener('click',function oc(e){if(!btn.contains(e.target)){closeIP();document.removeEventListener('click',oc);}});
+}
+
+function filtIcons(q,gid){var g=document.getElementById(gid);if(!g)return;var lo=q.toLowerCase();g.querySelectorAll('.icon-opt').forEach(function(el){el.style.display=el.title.includes(lo)?'':'none';});}
+
+/* ─── WEB EDITOR ─── */
+function renderWE(){
+  var m=document.getElementById('mainarea');
+  m.innerHTML='';
+
+  /* ── top bar ── */
+  var top=document.createElement('div');
+  top.style.cssText='display:flex;justify-content:space-between;align-items:center;margin-bottom:14px';
+  top.innerHTML='<div><div style="font-size:18px;font-weight:normal">網站內容編輯</div>'
+    +'<div style="font-size:12px;color:var(--muted);margin-top:3px;font-family:sans-serif">所有文字、圖示、顏色皆可在此後台直接修改</div></div>'
+    +'<div style="display:flex;gap:8px">'
+    +(editMode
+      ?'<button class="btn-fill" id="em-btn"><i class="ti ti-check"></i> 完成</button>'
+      :'<button class="btn-fill" id="em-btn"><i class="ti ti-pencil"></i> 啟用直接點擊編輯</button>')
+    +'<button class="btn-border" id="prev-btn"><i class="ti ti-eye"></i> 前台</button></div>';
+  m.appendChild(top);
+  document.getElementById('em-btn').onclick=function(){setEM(!editMode);};
+  document.getElementById('prev-btn').onclick=function(){goPage('home');};
+  var expBtn=document.createElement('button');expBtn.className='btn-border';
+  expBtn.style.fontSize='12px';expBtn.textContent='↓ 匯出設定';
+  expBtn.onclick=exportSettings;
+  document.getElementById('prev-btn').parentNode.insertBefore(expBtn, document.getElementById('prev-btn'));
+
+  if(editMode){
+    var tip=document.createElement('div');
+    tip.style.cssText='background:rgba(212,129,90,.1);border:.5px solid rgba(212,129,90,.4);border-radius:3px;padding:9px 13px;margin-bottom:13px;font-family:sans-serif;font-size:12px;color:var(--clay-dark);display:flex;align-items:center;gap:8px';
+    tip.innerHTML='<i class="ti ti-pencil" style="font-size:14px"></i>可點擊右側預覽中的任何文字直接修改';
+    m.appendChild(tip);
+  }
+
+  /* ── grid wrap ── */
+  var grid=document.createElement('div');
+  grid.className='ed-grid';
+  m.appendChild(grid);
+
+  var panelWrap=document.createElement('div');
+  panelWrap.style.cssText='overflow-y:auto;height:100%;scrollbar-width:thin;scrollbar-color:var(--clay) var(--sand2);';
+  var panel=document.createElement('div');
+  panel.className='ed-panel';
+  panelWrap.appendChild(panel);
+  grid.appendChild(panelWrap);
+
+  /* helper: append group */
+  /* track open group */
+  var openGroup=null;
+  function addGroup(iconCls,title,buildFn,defaultOpen){
+    var g=document.createElement('div');g.className='ed-group';
+    var head=document.createElement('div');head.className='eg-head';
+    /* icon mapping for SVG */
+    var ICONS_MAP={
+      'ti-letter-case':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:7px;color:var(--clay-dark)"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="17.5" cy="15.5" r="3.5"/><path d="M3 19v-10.5a3.5 3.5 0 0 1 7 0v10.5"/><path d="M3 13h7"/><path d="M21 12v7"/></svg>',
+      'ti-settings':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:7px;color:var(--clay-dark)"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"/><circle cx="12" cy="12" r="3"/></svg>',
+      'ti-layout':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:7px;color:var(--clay-dark)"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="4" y="4" width="6" height="5" rx="2"/><rect x="4" y="13" width="6" height="7" rx="2"/><rect x="14" y="4" width="6" height="7" rx="2"/><rect x="14" y="15" width="6" height="5" rx="2"/></svg>',
+      'ti-home':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:7px;color:var(--clay-dark)"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l-2 0l9 -9l9 9l-2 0"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"/><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6"/></svg>',
+      'ti-layout-grid':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:7px;color:var(--clay-dark)"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>',
+      'ti-chart-bar':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:7px;color:var(--clay-dark)"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="3" y="12" width="4" height="8" rx="1"/><rect x="9" y="8" width="4" height="12" rx="1"/><rect x="15" y="4" width="4" height="16" rx="1"/><line x1="3" y1="20" x2="21" y2="20"/></svg>',
+      'ti-users':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:7px;color:var(--clay-dark)"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"/></svg>',
+      'ti-speakerphone':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:7px;color:var(--clay-dark)"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 8a3 3 0 0 1 0 6"/><path d="M10 8v11a1 1 0 0 1 -1 1h-1a1 1 0 0 1 -1 -1v-5"/><path d="M12 8h0l4.524 -3.77a.9 .9 0 0 1 1.476 .692v12.156a.9 .9 0 0 1 -1.476 .692l-4.524 -3.77h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h8"/></svg>',
+      'ti-layout-bottombar':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:7px;color:var(--clay-dark)"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 15l16 0"/></svg>',
+      'ti-clock':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:7px;color:var(--clay-dark)"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>',
+      'ti-list-numbers':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:7px;color:var(--clay-dark)"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11 6h9"/><path d="M11 12h9"/><path d="M12 18h8"/><path d="M4 16a2 2 0 1 1 4 0c0 .591 -.5 1 -1 1.5l-3 2.5h4"/><path d="M6 10v-6l-2 2"/></svg>'
+    };
+    var iconSVG = ICONS_MAP[iconCls] || ('<span style="width:14px;height:14px;display:inline-block;margin-right:7px"></span>');
+    var chevron=document.createElement('span');
+    chevron.style.cssText='font-size:10px;color:var(--muted);transition:transform .2s;display:inline-block;margin-left:auto';
+    chevron.textContent='▶';
+    var titleSpan=document.createElement('span');
+    titleSpan.style.cssText='display:flex;align-items:center';
+    titleSpan.innerHTML=iconSVG+title;
+    head.appendChild(titleSpan);
+    head.appendChild(chevron);
+    var body=document.createElement('div');body.className='eg-body';
+    body.style.display='none';
+    g.appendChild(head);g.appendChild(body);
+    buildFn(body);
+    head.onclick=function(){
+      var isOpen=body.style.display!=='none';
+      /* close all */
+      panel.querySelectorAll('.eg-body').forEach(function(b){b.style.display='none';});
+      panel.querySelectorAll('.eg-head span:last-child').forEach(function(c){c.style.transform='';c.style.color='var(--muted)';});
+      panel.querySelectorAll('.eg-head').forEach(function(h){h.style.background='';});
+      if(!isOpen){
+        body.style.display='block';
+        chevron.style.transform='rotate(90deg)';
+        chevron.style.color='var(--accent)';
+        head.style.background='var(--sand2)';
+      }
+    };
+    if(defaultOpen){
+      body.style.display='block';
+      chevron.style.transform='rotate(90deg)';
+      chevron.style.color='var(--accent)';
+      head.style.background='var(--sand2)';
+    }
+    panel.appendChild(g);
+  }
+
+  /* helper: text field */
+  function addField(parent,label,getValue,setValue){
+    var w=document.createElement('div');w.style.marginBottom='10px';
+    var lbl=document.createElement('div');lbl.className='ef-label';lbl.textContent=label;
+    var inp=document.createElement('input');inp.className='ef-inp';
+    inp.value=(getValue()||'').replace(/<[^>]*>/g,'');
+    inp.oninput=function(){setValue(this.value);rp();};
+    w.appendChild(lbl);w.appendChild(inp);parent.appendChild(w);
+    return inp;
+  }
+
+  /* helper: textarea field */
+  function addTA(parent,label,getValue,setValue){
+    var w=document.createElement('div');w.style.marginBottom='10px';
+    var lbl=document.createElement('div');lbl.className='ef-label';lbl.textContent=label;
+    var ta=document.createElement('textarea');ta.className='ef-inp';ta.rows=2;ta.style.resize='none';
+    ta.value=(getValue()||'').replace(/<[^>]*>/g,'');
+    ta.oninput=function(){setValue(this.value);rp();};
+    w.appendChild(lbl);w.appendChild(ta);parent.appendChild(w);
+    return ta;
+  }
+
+  /* helper: color palette */
+  function addPalette(parent,getCurrent,onPick){
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;gap:4px;flex-wrap:wrap;margin-top:5px';
+    PAL.forEach(function(c){
+      var d=document.createElement('div');
+      d.className='color-dot'+(getCurrent()===c?' sel':'');
+      d.style.background=c;d.title=c;
+      d.onclick=function(){onPick(c);rp();
+        row.querySelectorAll('.color-dot').forEach(function(x){x.classList.remove('sel');});
+        d.classList.add('sel');
+      };
+      row.appendChild(d);
+    });
+    parent.appendChild(row);
+  }
+
+  /* helper: icon picker button */
+  function addIconPick(parent,label,getIcon,setIcon){
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;gap:6px;align-items:center;margin-bottom:7px';
+    var lbl=document.createElement('div');
+    lbl.style.cssText='font-size:10px;color:var(--muted);font-family:sans-serif;width:30px;flex-shrink:0';
+    lbl.textContent=label;
+    var wrap=document.createElement('div');wrap.className='icon-picker-wrap';wrap.style.flex='1';
+    var btn=document.createElement('div');btn.className='icon-preview-btn';
+    var btnId='ipb'+Math.random().toString(36).slice(2);btn.id=btnId;
+    var ico=document.createElement('i');ico.className='ti '+getIcon();
+    var sp=document.createElement('span');sp.style.cssText='font-size:11px;font-family:sans-serif;color:var(--muted)';
+    sp.textContent=getIcon();
+    btn.appendChild(ico);btn.appendChild(sp);
+    btn.onclick=function(e){
+      e.stopPropagation();
+      showIP(btnId,getIcon(),function(ic){
+        setIcon(ic);ico.className='ti '+ic;sp.textContent=ic;rp();
+      });
+    };
+    wrap.appendChild(btn);row.appendChild(lbl);row.appendChild(wrap);parent.appendChild(row);
+  }
+
+  /* ── toggle helper ── */
+  function addToggle(parent,labelText,getVal,setVal){
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:.5px solid var(--border)';
+    var sp=document.createElement('span');sp.style.fontSize='12px';sp.textContent=labelText;
+    var label=document.createElement('label');label.className='tog';
+    var inp=document.createElement('input');inp.type='checkbox';inp.checked=getVal();
+    inp.onchange=function(){setVal(this.checked);rp();};
+    var slider=document.createElement('span');slider.className='togslider';
+    label.appendChild(inp);label.appendChild(slider);
+    row.appendChild(sp);row.appendChild(label);parent.appendChild(row);
+  }
+
+  /* ════ GROUPS ════ */
+
+  /* 品牌名稱 */
+  addGroup('ti-letter-case','品牌名稱',function(b){
+    addField(b,'UJA 部分',function(){return SC.bUja;},function(v){SC.bUja=v;syncBrand();});
+    addField(b,'STUDIO 部分',function(){return SC.bStudio;},function(v){SC.bStudio=v;syncBrand();});
+    addField(b,'ARCHITECT 部分',function(){return SC.bArch;},function(v){SC.bArch=v;syncBrand();});
+  },true);
+
+  /* 主色調 */
+  addGroup('ti-settings','主色調',function(b){
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;gap:6px;flex-wrap:wrap';
+    ['#D4815A','#8B6E4E','#7A8C6E','#5C4A35','#B5726A','#9B7B5C','#6B8E6B','#A07850'].forEach(function(c){
+      var d=document.createElement('div');
+      d.style.cssText='width:22px;height:22px;border-radius:50%;background:'+c+';cursor:pointer;border:2px solid '+(SC.accentColor===c?'var(--earth)':'transparent');
+      d.onclick=function(){chAcc(c);};
+      row.appendChild(d);
+    });
+    b.appendChild(row);
+  });
+
+  /* 區塊顯示 */
+  addGroup('ti-layout','區塊顯示',function(b){
+    [['hero','英雄區'],['stats','數據列'],['services','服務項目'],['process','設計流程'],['team','設計團隊'],['cta','行動呼籲']].forEach(function(kv){
+      addToggle(b,kv[1],function(){return SC.vis[kv[0]];},function(v){SC.vis[kv[0]]=v;});
+    });
+  });
+
+  /* 英雄區 */
+  addGroup('ti-home','英雄區',function(b){
+    addField(b,'副標語',function(){return SC.hero.eyebrow;},function(v){SC.hero.eyebrow=v;});
+    addField(b,'主標題（em=斜體）',function(){return SC.hero.title;},function(v){SC.hero.title=v;});
+    addTA(b,'介紹文字',function(){return SC.hero.desc;},function(v){SC.hero.desc=v;});
+    addField(b,'主按鈕文字',function(){return SC.hero.cta1;},function(v){SC.hero.cta1=v;});
+    addField(b,'次按鈕文字',function(){return SC.hero.cta2;},function(v){SC.hero.cta2=v;});
+  });
+
+  /* 馬賽克色塊 */
+  addGroup('ti-layout-grid','英雄馬賽克',function(b){
+    SC.mosaic.forEach(function(m,i){
+      var card=document.createElement('div');
+      card.style.cssText='border:.5px solid var(--border);border-radius:3px;padding:9px;margin-bottom:8px';
+
+      /* label row */
+      var lr=document.createElement('div');
+      lr.style.cssText='display:flex;align-items:center;gap:7px;margin-bottom:7px';
+      var swatch=document.createElement('div');
+      swatch.style.cssText='width:26px;height:26px;border-radius:50%;background:'+m.bg+';flex-shrink:0;border:.5px solid var(--border)';
+      swatch.id='ms'+i;
+      var inp=document.createElement('input');
+      inp.style.cssText='flex:1;border:.5px solid var(--border);border-radius:2px;padding:5px 8px;font-size:11px;background:var(--warm-white);font-family:sans-serif;color:var(--charcoal)';
+      inp.value=m.lbl;
+      inp.oninput=function(){SC.mosaic[i].lbl=this.value;rp();};
+      lr.appendChild(swatch);lr.appendChild(inp);card.appendChild(lr);
+
+      /* icon picker */
+      (function(idx){
+        addIconPick(card,'圖示',function(){return SC.mosaic[idx].icon;},function(ic){SC.mosaic[idx].icon=ic;});
+      })(i);
+
+      /* bg color */
+      var bgl=document.createElement('div');
+      bgl.style.cssText='display:flex;gap:6px;align-items:flex-start;margin-bottom:6px';
+      var bglabel=document.createElement('div');
+      bglabel.style.cssText='font-size:10px;color:var(--muted);font-family:sans-serif;width:30px;padding-top:6px;flex-shrink:0';
+      bglabel.textContent='底色';
+      bgl.appendChild(bglabel);
+      var bgrw=document.createElement('div');bgrw.style.cssText='display:flex;gap:4px;flex-wrap:wrap';
+      PAL.forEach(function(c){
+        var d=document.createElement('div');d.className='color-dot'+(m.bg===c?' sel':'');
+        d.style.background=c;d.title=c;
+        d.onclick=(function(ci,di,swatchEl){return function(){SC.mosaic[i].bg=ci;rp();swatchEl.style.background=ci;bgrw.querySelectorAll('.color-dot').forEach(function(x){x.classList.remove('sel');});di.classList.add('sel');};})(c,d,swatch);
+        bgrw.appendChild(d);
+      });
+      bgl.appendChild(bgrw);card.appendChild(bgl);
+
+      /* text color */
+      var tcl=document.createElement('div');
+      tcl.style.cssText='display:flex;gap:6px;align-items:flex-start';
+      var tclabel=document.createElement('div');
+      tclabel.style.cssText='font-size:10px;color:var(--muted);font-family:sans-serif;width:30px;padding-top:6px;flex-shrink:0';
+      tclabel.textContent='文字';
+      tcl.appendChild(tclabel);
+      var tcrw=document.createElement('div');tcrw.style.cssText='display:flex;gap:4px;flex-wrap:wrap';
+      PAL.forEach(function(c){
+        var d=document.createElement('div');d.className='color-dot'+(m.tc===c?' sel':'');
+        d.style.background=c;d.title=c;
+        d.onclick=(function(ci,di){return function(){SC.mosaic[i].tc=ci;rp();tcrw.querySelectorAll('.color-dot').forEach(function(x){x.classList.remove('sel');});di.classList.add('sel');};})(c,d);
+        tcrw.appendChild(d);
+      });
+      tcl.appendChild(tcrw);card.appendChild(tcl);
+
+      b.appendChild(card);
+    });
+  });
+
+  /* 數據欄 */
+  addGroup('ti-chart-bar','數據欄',function(b){
+    SC.stats.forEach(function(s,i){
+      var row=document.createElement('div');
+      row.style.cssText='display:grid;grid-template-columns:1fr 1.6fr;gap:7px;margin-bottom:8px';
+      var n=document.createElement('div');
+      var nl=document.createElement('div');nl.className='ef-label';nl.textContent='數字';
+      var ni=document.createElement('input');ni.className='ef-inp';ni.value=s.num;
+      ni.oninput=function(){SC.stats[i].num=this.value;rp();};
+      n.appendChild(nl);n.appendChild(ni);
+      var l=document.createElement('div');
+      var ll=document.createElement('div');ll.className='ef-label';ll.textContent='說明';
+      var li=document.createElement('input');li.className='ef-inp';li.value=s.lbl;
+      li.oninput=function(){SC.stats[i].lbl=this.value;rp();};
+      l.appendChild(ll);l.appendChild(li);
+      row.appendChild(n);row.appendChild(l);b.appendChild(row);
+    });
+  });
+
+  /* 服務項目（含圖示） */
+  addGroup('ti-layout','服務項目',function(b){
+    SC.services.forEach(function(s,i){
+      var card=document.createElement('div');
+      card.style.cssText='border-bottom:.5px solid var(--border);padding-bottom:10px;margin-bottom:10px';
+      (function(idx){
+        addIconPick(card,'圖示',function(){return SC.services[idx].icon;},function(ic){SC.services[idx].icon=ic;});
+      })(i);
+      addField(card,'標題',function(){return s.title;},function(v){SC.services[i].title=v;});
+      addTA(card,'說明',function(){return s.desc;},function(v){SC.services[i].desc=v;});
+      b.appendChild(card);
+    });
+  });
+
+  /* 設計流程 */
+  addGroup('ti-list-numbers','設計流程',function(b){
+    SC.process.forEach(function(p,i){
+      var card=document.createElement('div');
+      card.style.cssText='border-bottom:.5px solid var(--border);padding-bottom:8px;margin-bottom:8px';
+      var row=document.createElement('div');row.style.cssText='display:flex;gap:7px;margin-bottom:5px';
+      var ni=document.createElement('input');ni.className='ef-inp';ni.style.width='44px';ni.value=p.num;
+      ni.oninput=function(){SC.process[i].num=this.value;rp();};
+      var ti=document.createElement('input');ti.className='ef-inp';ti.value=p.title;
+      ti.oninput=function(){SC.process[i].title=this.value;rp();};
+      row.appendChild(ni);row.appendChild(ti);card.appendChild(row);
+      addTA(card,'說明',function(){return SC.process[i].desc;},function(v){SC.process[i].desc=v;});
+      b.appendChild(card);
+    });
+  });
+
+  /* 設計團隊（含顏色） */
+  addGroup('ti-users','設計團隊',function(b){
+    SC.team.forEach(function(mem,i){
+      var card=document.createElement('div');
+      card.style.cssText='border:.5px solid var(--border);border-radius:3px;padding:9px;margin-bottom:8px';
+      var top=document.createElement('div');top.style.cssText='display:flex;gap:8px;align-items:center;margin-bottom:8px';
+      var av=document.createElement('div');
+      av.id='tav'+i;
+      av.style.cssText='width:34px;height:34px;border-radius:50%;background:'+mem.color+';display:flex;align-items:center;justify-content:center;font-size:14px;font-style:italic;color:white;flex-shrink:0';
+      av.textContent=mem.init;
+      var fields=document.createElement('div');fields.style.flex='1';
+      var ni=document.createElement('input');ni.className='ef-inp';ni.style.marginBottom='5px';ni.value=mem.name;
+      ni.oninput=function(){SC.team[i].name=this.value;SC.team[i].init=this.value.charAt(0);av.textContent=this.value.charAt(0);rp();};
+      var ri=document.createElement('input');ri.className='ef-inp';ri.value=mem.role;
+      ri.oninput=function(){SC.team[i].role=this.value;rp();};
+      fields.appendChild(ni);fields.appendChild(ri);
+      top.appendChild(av);top.appendChild(fields);card.appendChild(top);
+      /* color palette */
+      var pl=document.createElement('div');pl.style.cssText='display:flex;gap:4px;flex-wrap:wrap';
+      PAL.forEach(function(c){
+        var d=document.createElement('div');d.className='color-dot'+(mem.color===c?' sel':'');
+        d.style.background=c;d.title=c;
+        d.onclick=(function(ci,di){return function(){SC.team[i].color=ci;av.style.background=ci;rp();pl.querySelectorAll('.color-dot').forEach(function(x){x.classList.remove('sel');});di.classList.add('sel');};})(c,d);
+        pl.appendChild(d);
+      });
+      card.appendChild(pl);b.appendChild(card);
+    });
+  });
+
+  /* 行動呼籲 */
+  addGroup('ti-speakerphone','行動呼籲',function(b){
+    addField(b,'標題（em=斜體）',function(){return SC.cta.title;},function(v){SC.cta.title=v;});
+    addField(b,'說明文字',function(){return SC.cta.sub;},function(v){SC.cta.sub=v;});
+    addField(b,'按鈕文字',function(){return SC.cta.btn;},function(v){SC.cta.btn=v;});
+  });
+
+  /* 頁腳聯絡 */
+  addGroup('ti-layout-bottombar','頁腳 — 聯絡資訊',function(b){
+    addField(b,'公司簡介',function(){return SC.footer.tagline;},function(v){SC.footer.tagline=v;});
+    addField(b,'地址',function(){return SC.footer.address;},function(v){SC.footer.address=v;});
+    addField(b,'電話',function(){return SC.footer.phone;},function(v){SC.footer.phone=v;});
+    addField(b,'電子信箱',function(){return SC.footer.email;},function(v){SC.footer.email=v;});
+    addField(b,'Instagram',function(){return SC.footer.instagram;},function(v){SC.footer.instagram=v;});
+    addField(b,'版權文字',function(){return SC.footer.copyright;},function(v){SC.footer.copyright=v;});
+  });
+
+  /* 頁腳營業時間 */
+  addGroup('ti-clock','頁腳 — 營業時間',function(b){
+    function buildHoursRows(){
+      var cont=document.getElementById('hcont');
+      if(!cont)return;
+      cont.innerHTML='';
+      SC.footer.hours.forEach(function(hr,i){
+        var row=document.createElement('div');row.className='hours-editor-row';
+        var di=document.createElement('input');di.value=hr.day;
+        di.oninput=function(){SC.footer.hours[i].day=this.value;rp();};
+        var ti=document.createElement('input');ti.value=hr.closed?'休息':hr.time;
+        ti.oninput=function(){var v=this.value;if(v==='休息'){SC.footer.hours[i].time='';SC.footer.hours[i].closed=true;}else{SC.footer.hours[i].time=v;SC.footer.hours[i].closed=false;}rp();};
+        var del=document.createElement('button');
+        del.style.cssText='background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px';
+        del.innerHTML='<i class="ti ti-x"></i>';
+        del.onclick=function(){SC.footer.hours.splice(i,1);buildHoursRows();rp();};
+        row.appendChild(di);row.appendChild(ti);row.appendChild(del);cont.appendChild(row);
+      });
+    }
+    var cont=document.createElement('div');cont.id='hcont';b.appendChild(cont);
+    buildHoursRows();
+    var addBtn=document.createElement('button');
+    addBtn.className='btn-border';
+    addBtn.style.cssText='width:100%;font-size:11px;margin-top:8px';
+    addBtn.innerHTML='<i class="ti ti-plus"></i> 新增時段';
+    addBtn.onclick=function(){SC.footer.hours.push({day:'',time:'',closed:false});buildHoursRows();rp();};
+    b.appendChild(addBtn);
+  });
+
+
+  /* Privacy editor */
+  addGroup('ti-layout-bottombar','隱私政策（可編輯）',function(b){
+    addField(b,'頁面標題',function(){return SC.footer.privacy?SC.footer.privacy.title:'';},function(v){if(SC.footer.privacy)SC.footer.privacy.title=v;});
+    var lbl=document.createElement('div');lbl.className='ef-label';lbl.style.marginBottom='4px';lbl.textContent='頁面內容（HTML）';b.appendChild(lbl);
+    var ta=document.createElement('textarea');ta.className='ef-inp';ta.rows=5;ta.style.cssText='resize:vertical;font-size:11px;font-family:sans-serif;line-height:1.5';
+    ta.value=SC.footer.privacy?SC.footer.privacy.content:'';
+    ta.oninput=function(){if(SC.footer.privacy)SC.footer.privacy.content=this.value;};
+    b.appendChild(ta);
+    var tip=document.createElement('div');tip.style.cssText='font-size:10px;color:var(--muted);margin-top:4px;font-family:sans-serif';
+    tip.textContent='支援 <h2> <h3> <p> 等標籤';b.appendChild(tip);
+    var btn=document.createElement('button');btn.className='btn-fill';btn.style.cssText='font-size:11px;margin-top:9px;width:100%';btn.textContent='儲存';
+    btn.onclick=function(){if(SC.footer.privacy)SC.footer.privacy.content=ta.value;toast('隱私政策已儲存');};
+    b.appendChild(btn);
+  });
+  /* Terms editor */
+  addGroup('ti-layout-bottombar','服務條款（可編輯）',function(b){
+    addField(b,'頁面標題',function(){return SC.footer.terms?SC.footer.terms.title:'';},function(v){if(SC.footer.terms)SC.footer.terms.title=v;});
+    var lbl=document.createElement('div');lbl.className='ef-label';lbl.style.marginBottom='4px';lbl.textContent='頁面內容（HTML）';b.appendChild(lbl);
+    var ta=document.createElement('textarea');ta.className='ef-inp';ta.rows=5;ta.style.cssText='resize:vertical;font-size:11px;font-family:sans-serif;line-height:1.5';
+    ta.value=SC.footer.terms?SC.footer.terms.content:'';
+    ta.oninput=function(){if(SC.footer.terms)SC.footer.terms.content=this.value;};
+    b.appendChild(ta);
+    var tip=document.createElement('div');tip.style.cssText='font-size:10px;color:var(--muted);margin-top:4px;font-family:sans-serif';
+    tip.textContent='支援 <h2> <h3> <p> 等標籤';b.appendChild(tip);
+    var btn=document.createElement('button');btn.className='btn-fill';btn.style.cssText='font-size:11px;margin-top:9px;width:100%';btn.textContent='儲存';
+    btn.onclick=function(){if(SC.footer.terms)SC.footer.terms.content=ta.value;toast('服務條款已儲存');};
+    b.appendChild(btn);
+  });
+
+  /* ── preview pane ── */
+  var prevWrap=document.createElement('div');prevWrap.className='preview-wrap';
+  var bar=document.createElement('div');bar.className='preview-bar';
+  bar.innerHTML='<div><span class="dot" style="background:#e0b8a0"></span><span class="dot" style="background:#c8a882"></span><span class="dot" style="background:#8b9e7d"></span><span style="margin-left:6px">ujastudio.tw</span></div>'
+    +'<span style="color:'+(editMode?'var(--accent)':'var(--muted)')+'">'+(editMode?'● 可點擊編輯':'預覽')+'</span>';
+  var scroll=document.createElement('div');scroll.className='preview-scroll';scroll.id='prevscroll';
+  scroll.style.fontSize='.67em';
+  scroll.innerHTML=buildHome(true)+buildFooterMini();
+  prevWrap.appendChild(bar);prevWrap.appendChild(scroll);
+  grid.appendChild(prevWrap);
+  attachEds();
+}
+
+function EG(icon,title,body){return '<div class="ed-group"><div class="eg-head"><i class="ti '+icon+'"></i>'+title+'</div><div class="eg-body">'+body+'</div></div>';}
+function EF(label,_k,val,cb){
+  var plain=(val||'').replace(/<[^>]*>/g,'');
+  return '<div style="margin-bottom:10px"><div class="ef-label">'+label+'</div><input class="ef-inp" value="'+plain+'" oninput="var v=this.value;'+cb+';rp()"></div>';
+}
+function EF2(label,_k,val,cb){
+  var plain=(val||'').replace(/<[^>]*>/g,'');
+  return '<div style="margin-bottom:10px"><div class="ef-label">'+label+'</div><input class="ef-inp" value="'+plain+'" oninput="var v=this.value;'+cb+';rp()"></div>';
+}
+function EFta(label,_k,val,cb){
+  var plain=(val||'').replace(/<[^>]*>/g,'');
+  return '<div style="margin-bottom:10px"><div class="ef-label">'+label+'</div><textarea class="ef-inp" rows="2" style="resize:none" oninput="var v=this.value;'+cb+';rp()">'+plain+'</textarea></div>';
+}
+function uhour(i,val){if(val==='休息'){SC.footer.hours[i].time='';SC.footer.hours[i].closed=true;}else{SC.footer.hours[i].time=val;SC.footer.hours[i].closed=false;}rp();}
+function setEM(on){editMode=on;renderWE();}
+function attachEds(){
+  var ps=document.getElementById('prevscroll');if(!ps||!editMode)return;
+  ps.querySelectorAll('[data-ek]').forEach(function(el){
+    el.classList.add('edon');el.setAttribute('contenteditable','true');
+    el.addEventListener('blur',function(){scSet(el.dataset.ek,el.innerHTML);renderWE();toast('已儲存');});
+    el.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();el.blur();}});
+  });
+}
+function rp(){var ps=document.getElementById('prevscroll');if(!ps)return;ps.innerHTML=buildHome(true)+buildFooterMini();attachEds();}
+function chAcc(c){SC.accentColor=c;document.documentElement.style.setProperty('--accent',c);rp();renderWE();toast('主色調已更新');}
+
+/* ─── OTHER SECTIONS ─── */
+function renderProjects(){
+  var m=document.getElementById('mainarea');
+  if(editingProjId!==null){renderProjectEdit(editingProjId);return;}
+  var h='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">'
+    +'<div style="font-size:18px;font-weight:normal">專案管理</div>'
+    +'<button class="btn-fill" style="font-size:12px" onclick="editingProjId=\'new\';renderProjects()">+ 新增專案</button></div>';
+  h+='<div style="overflow-x:auto"><table class="tbl"><thead><tr>';
+  ['名稱','客戶','預算','進度','狀態','負責人','操作'].forEach(function(c){h+='<th>'+c+'</th>';});
+  h+='</tr></thead><tbody>';
+  PROJECTS.forEach(function(r){
+    h+='<tr><td style="font-weight:500">'+r.n+'</td>'
+      +'<td style="color:var(--muted);font-size:12px">'+r.c+'</td>'
+      +'<td style="font-size:12px;color:var(--muted)">NT$'+r.budget.toLocaleString()+'</td>'
+      +'<td><div style="width:70px"><div style="height:4px;background:var(--sand2);border-radius:2px"><div style="width:'+r.p+'%;height:100%;background:var(--clay);border-radius:2px"></div></div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-family:sans-serif">'+r.p+'%</div></div></td>'
+      +'<td><span class="spill" style="background:'+PROJ_STATUS_CLR[r.s]+';color:'+PROJ_STATUS_TC[r.s]+'">'+PROJ_STATUS[r.s]+'</span></td>'
+      +'<td style="color:var(--muted);font-size:12px">'+r.d+'</td>'
+      +'<td style="white-space:nowrap">'
+      +'<button style="background:none;border:.5px solid var(--border);border-radius:2px;padding:4px 9px;font-size:11px;color:var(--muted);cursor:pointer;margin-right:4px" onclick="editingProjId='+r.id+';renderProjects()">編輯</button>'
+      +'<button style="background:none;border:.5px solid rgba(192,74,53,.3);border-radius:2px;padding:4px 9px;font-size:11px;color:var(--danger);cursor:pointer" onclick="delProject('+r.id+')">刪除</button>'
+      +'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+  m.innerHTML=h;
+}
+
+function renderProjectEdit(id){
+  var isNew=(id==='new');
+  var r=isNew?{id:null,n:'',c:'',p:0,s:'active',d:'',budget:0,note:''}:PROJECTS.find(function(x){return x.id===id;});
+  var m=document.getElementById('mainarea');
+  var h='<div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">'
+    +'<button class="btn-border" onclick="editingProjId=null;renderProjects()">← 返回</button>'
+    +'<div style="font-size:18px;font-weight:normal">'+(isNew?'新增專案':'編輯專案')+'</div></div>';
+  h+='<div style="background:var(--sand);border:.5px solid var(--border);border-radius:4px;padding:22px;max-width:560px">';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">';
+  h+=pf('專案名稱','pn',r.n)+pf('客戶姓名','pc',r.c);
+  h+=pf('負責設計師','pd',r.d)+pf('預算（NT$）','pb',r.budget);
+  h+='</div>';
+  h+='<div style="margin-bottom:12px"><div class="ef-label" style="margin-bottom:4px">完成進度（0-100）</div>';
+  h+='<input class="fi" type="number" id="pp" min="0" max="100" value="'+r.p+'" style="width:120px"></div>';
+  h+='<div style="margin-bottom:12px"><div class="ef-label" style="margin-bottom:4px">狀態</div>';
+  h+='<select class="fi" id="ps" style="width:160px">';
+  Object.entries(PROJ_STATUS).forEach(function(e){h+='<option value="'+e[0]+'"'+(r.s===e[0]?' selected':'')+'>'+e[1]+'</option>';});
+  h+='</select></div>';
+  h+='<div style="margin-bottom:16px"><div class="ef-label" style="margin-bottom:4px">備註</div>';
+  h+='<textarea class="fi" id="pnote" rows="2" style="resize:none">'+r.note+'</textarea></div>';
+  h+='<div style="display:flex;gap:9px">';
+  h+='<button class="btn-fill" onclick="saveProject('+(isNew?'\'new\'':r.id)+')">儲存</button>';
+  h+='<button class="btn-border" onclick="editingProjId=null;renderProjects()">取消</button></div>';
+  h+='</div>';
+  m.innerHTML=h;
+}
+
+function pf(label,id,val){
+  return '<div><div class="ef-label" style="margin-bottom:4px">'+label+'</div><input class="fi" id="'+id+'" value="'+val+'"></div>';
+}
+
+function saveProject(id){
+  var isNew=(id==='new');
+  var obj={
+    id:isNew?(PROJECTS.length?Math.max.apply(null,PROJECTS.map(function(x){return x.id;}))+1:1):id,
+    n:document.getElementById('pn').value,
+    c:document.getElementById('pc').value,
+    d:document.getElementById('pd').value,
+    budget:+document.getElementById('pb').value||0,
+    p:Math.min(100,Math.max(0,+document.getElementById('pp').value||0)),
+    s:document.getElementById('ps').value,
+    note:document.getElementById('pnote').value
+  };
+  if(isNew){PROJECTS.push(obj);}
+  else{var idx=PROJECTS.findIndex(function(x){return x.id===id;});if(idx>=0)PROJECTS[idx]=obj;}
+  editingProjId=null;toast('專案已儲存');renderProjects();
+}
+
+function delProject(id){
+  if(!confirm('確定刪除此專案？'))return;
+  PROJECTS=PROJECTS.filter(function(x){return x.id!==id;});
+  toast('已刪除');renderProjects();
+}
+
+function renderPortAdmin(){
+  var h='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div style="font-size:18px;font-weight:normal">作品集管理</div><button class="btn-fill" style="font-size:12px" onclick="newPort()"><i class="ti ti-plus"></i> 新增</button></div>';
+  h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">';
+  PORTFOLIO.forEach(function(p){
+    var cov=p.imgs.length?'<img src="'+p.imgs[0]+'" style="width:100%;height:100%;object-fit:cover">':'<span style="font-size:11px;color:var(--muted);font-family:sans-serif">'+p.catName+'</span>';
+    h+='<div class="pc" style="background:var(--warm-white);border:.5px solid var(--border);border-radius:4px;overflow:hidden">'
+      +'<div class="ptw" style="background:'+p.color+'22"><div style="height:115px;width:100%;display:flex;align-items:center;justify-content:center">'+cov+'</div>'
+      +'<div class="pto"><button class="peb" onclick="editPort('+p.id+')"><i class="ti ti-edit"></i> 編輯</button><button class="peb" style="color:var(--danger)" onclick="delPort('+p.id+')"><i class="ti ti-trash"></i></button></div></div>'
+      +'<div style="padding:11px 13px"><div style="font-size:10px;letter-spacing:2px;color:var(--accent);text-transform:uppercase;font-family:sans-serif">'+p.catName+'</div>'
+      +'<div style="font-size:13px;margin-top:3px">'+p.name+'</div>'
+      +'<div style="font-size:11px;color:var(--muted);margin-top:2px;font-family:sans-serif">'+p.area+' · '+p.year+'</div>'
+      +'<div style="display:flex;gap:6px;margin-top:9px">'
+      +'<button style="background:none;border:.5px solid var(--border);border-radius:2px;padding:4px 9px;font-size:11px;color:var(--muted);cursor:pointer;font-family:sans-serif" onclick="editPort('+p.id+')"><i class="ti ti-photo"></i> 照片('+p.imgs.length+')</button>'
+      +'<button style="background:none;border:.5px solid var(--border);border-radius:2px;padding:4px 9px;font-size:11px;color:var(--muted);cursor:pointer;font-family:sans-serif" onclick="editPort('+p.id+')"><i class="ti ti-edit"></i> 資訊</button>'
+      +'</div></div></div>';
+  });
+  h+='</div>';document.getElementById('mainarea').innerHTML=h;
+}
+function newPort(){var nid=PORTFOLIO.length?Math.max.apply(null,PORTFOLIO.map(function(x){return x.id;}))+1:1;PORTFOLIO.push({id:nid,name:'新作品',cat:'interior',catName:'室內設計',area:'',year:new Date().getFullYear()+'',imgs:[],color:'#C8A882',desc:''});editPort(nid);}
+function delPort(id){PORTFOLIO=PORTFOLIO.filter(function(p){return p.id!==id;});toast('已刪除');renderPortAdmin();}
+function editPort(id){
+  editingPortId=id;var p=PORTFOLIO.find(function(x){return x.id===id;});
+  var catMap={interior:'室內設計',architecture:'建築設計',commercial:'商業空間'};
+  var h='<div class="modal-bg"><div class="modal-box"><div style="font-size:15px;margin-bottom:3px">編輯作品</div><div style="font-size:12px;color:var(--muted);font-family:sans-serif;margin-bottom:16px">'+p.name+'</div>'
+    +'<div class="mfrow"><div class="mfl"><label>名稱</label><input class="fi" id="pe-n" value="'+p.name+'"></div><div class="mfl"><label>類型</label><select class="fi" id="pe-c">';
+  Object.entries(catMap).forEach(function(e){h+='<option value="'+e[0]+'"'+(p.cat===e[0]?' selected':'')+'>'+e[1]+'</option>';});
+  h+='</select></div></div><div class="mfrow"><div class="mfl"><label>坪數</label><input class="fi" id="pe-a" value="'+p.area+'"></div><div class="mfl"><label>年份</label><input class="fi" id="pe-y" value="'+p.year+'"></div></div>'
+    +'<div class="mfl" style="margin-bottom:13px"><label>描述</label><textarea class="fi" id="pe-d" rows="2" style="resize:none">'+p.desc+'</textarea></div>'
+    +'<div style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-family:sans-serif;margin-bottom:7px">作品照片 ('+p.imgs.length+' 張)</div>'
+    +'<div class="upload-zone" id="dz" onclick="document.getElementById(\'fi-inp\').click()" ondragover="event.preventDefault();this.classList.add(\'dov\')" ondragleave="this.classList.remove(\'dov\')" ondrop="hdrop(event)"><i class="ti ti-photo-up" style="font-size:26px;color:var(--clay);display:block;margin-bottom:8px"></i><div style="font-size:13px;margin-bottom:3px">點擊或拖曳照片上傳</div><div style="font-size:11px;color:var(--muted);font-family:sans-serif">JPG、PNG、WEBP · 可多選</div></div>'
+    +'<input type="file" id="fi-inp" accept="image/*" multiple style="display:none" onchange="hfiles(event)"><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:11px" id="img-list">';
+  p.imgs.forEach(function(url,i){h+='<div class="img-tw"><img src="'+url+'"><button class="img-rm" onclick="rmImg('+i+')"><i class="ti ti-x" style="font-size:9px"></i></button></div>';});
+  h+='</div><div style="display:flex;gap:9px;margin-top:16px;justify-content:flex-end"><button class="btn-border" onclick="renderPortAdmin()">取消</button><button class="btn-fill" onclick="savePort()"><i class="ti ti-check"></i> 儲存</button></div></div></div>';
+  document.getElementById('mainarea').innerHTML=h;
+}
+function hfiles(e){pimgs(Array.from(e.target.files));}
+function hdrop(e){e.preventDefault();document.getElementById('dz').classList.remove('dov');pimgs(Array.from(e.dataTransfer.files).filter(function(f){return f.type.startsWith('image/');}));}
+function pimgs(files){var p=PORTFOLIO.find(function(x){return x.id===editingPortId;});var rem=files.length;files.forEach(function(f){var r=new FileReader();r.onload=function(e){p.imgs.push(e.target.result);rem--;if(!rem){rimgs(p);toast(files.length+' 張已上傳');}};r.readAsDataURL(f);});}
+function rimgs(p){var c=document.getElementById('img-list');if(!c)return;var h='';p.imgs.forEach(function(url,i){h+='<div class="img-tw"><img src="'+url+'"><button class="img-rm" onclick="rmImg('+i+')"><i class="ti ti-x" style="font-size:9px"></i></button></div>';});c.innerHTML=h;}
+function rmImg(i){var p=PORTFOLIO.find(function(x){return x.id===editingPortId;});p.imgs.splice(i,1);rimgs(p);toast('已移除');}
+function savePort(){var p=PORTFOLIO.find(function(x){return x.id===editingPortId;});var cm={interior:'室內設計',architecture:'建築設計',commercial:'商業空間'};p.name=document.getElementById('pe-n').value||p.name;p.cat=document.getElementById('pe-c').value;p.catName=cm[p.cat];p.area=document.getElementById('pe-a').value;p.year=document.getElementById('pe-y').value;p.desc=document.getElementById('pe-d').value;toast('已儲存');editingPortId=null;renderPortAdmin();}
+
+function renderQuote(){
+  var h='<div style="font-size:18px;font-weight:normal;margin-bottom:14px">報價單產生</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px">'
+    +'<div class="mfl"><label style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-family:sans-serif;margin-bottom:4px;display:block">客戶姓名</label><input class="fi" id="qc" value="'+quoteData.client+'" oninput="quoteData.client=this.value"></div>'
+    +'<div class="mfl"><label style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-family:sans-serif;margin-bottom:4px;display:block">專案名稱</label><input class="fi" id="qp" value="'+quoteData.project+'" oninput="quoteData.project=this.value"></div>'
+    +'<div class="mfl"><label style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-family:sans-serif;margin-bottom:4px;display:block">設計類型</label><select class="fi" onchange="quoteData.type=this.value">';
+  ['住宅室內設計','商業空間設計','建築外觀設計','傢俱軟裝服務'].forEach(function(t){h+='<option'+(quoteData.type===t?' selected':'')+'>'+t+'</option>';});
+  h+='</select></div><div class="mfl"><label style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-family:sans-serif;margin-bottom:4px;display:block">報價日期</label><input class="fi" type="date" id="qdate" value="'+new Date().toISOString().slice(0,10)+'"></div></div>';
+  h+='<div class="qrow hdr"><span>項目</span><span>單位</span><span>數量</span><span>單價</span><span></span></div><div id="qrows">';
+  quoteData.items.forEach(function(it,i){h+=qrow(it,i);});
+  h+='</div><button class="btn-border" style="width:100%;margin-top:7px;border-style:dashed;font-size:12px" onclick="addQRow()">＋ 新增項目</button>'
+    +'<div style="display:flex;justify-content:flex-end;align-items:baseline;gap:13px;padding:13px 0;border-top:1px solid var(--border);margin-top:7px"><span style="font-size:13px;color:var(--muted)">稅前合計</span><span style="font-size:22px;font-style:italic;color:var(--clay-dark)" id="qtd">NT$ '+qtot().toLocaleString()+'</span></div>'
+    +'<div style="display:flex;gap:9px"><button style="display:flex;align-items:center;gap:7px;background:var(--earth);color:var(--warm-white);border:none;padding:10px 20px;font-size:13px;cursor:pointer;font-family:Georgia,serif;border-radius:2px" onclick="genPDF()"><i class="ti ti-download" style="font-size:14px"></i> 產生 PDF 報價單</button><button class="btn-border" onclick="prevQ()"><i class="ti ti-eye"></i> 預覽</button></div><div id="qprev"></div>';
+  document.getElementById('mainarea').innerHTML=h;
+}
+function qrow(it,i){return '<div class="qrow"><input class="qi" value="'+it.desc+'" oninput="quoteData.items['+i+'].desc=this.value"><input class="qi" value="'+it.unit+'" oninput="quoteData.items['+i+'].unit=this.value"><input class="qi" type="number" value="'+it.qty+'" oninput="quoteData.items['+i+'].qty=+this.value;uq()" style="text-align:right"><input class="qi" type="number" value="'+it.price+'" oninput="quoteData.items['+i+'].price=+this.value;uq()" style="text-align:right"><button style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px" onclick="delQR('+i+')"><i class="ti ti-x"></i></button></div>';}
+function qtot(){return quoteData.items.reduce(function(s,it){return s+it.qty*it.price;},0);}
+function uq(){var el=document.getElementById('qtd');if(el)el.textContent='NT$ '+qtot().toLocaleString();}
+function addQRow(){quoteData.items.push({desc:'',unit:'式',qty:1,price:0});renderQuote();}
+function delQR(i){quoteData.items.splice(i,1);renderQuote();}
+function prevQ(){
+  var tot=qtot(),tax=Math.round(tot*.05),date=document.getElementById('qdate').value;
+  var h='<div style="border:.5px solid var(--border);border-radius:4px;margin-top:13px;overflow:hidden"><div style="background:var(--sand);padding:8px 12px;border-bottom:.5px solid var(--border);font-size:11px;color:var(--muted);font-family:sans-serif;display:flex;justify-content:space-between"><span>預覽</span><span>'+SC.bUja+' '+SC.bStudio+' '+SC.bArch+'</span></div>'
+    +'<div style="padding:18px 22px;font-family:sans-serif"><div style="display:flex;justify-content:space-between;margin-bottom:14px"><div><span style="font-size:15px;letter-spacing:2px;color:var(--earth)">'+SC.bUja+'</span><span style="font-size:15px;letter-spacing:2px;color:var(--accent)">'+SC.bStudio+'</span> <span style="font-size:10px;letter-spacing:1.5px;color:var(--muted)">'+SC.bArch+'</span></div><div style="text-align:right"><div style="font-size:12px">報價單</div><div style="font-size:10px;color:var(--muted)">'+date+'</div></div></div>'
+    +'<div style="background:var(--sand);border-radius:3px;padding:10px 12px;margin-bottom:13px;display:grid;grid-template-columns:1fr 1fr;gap:6px"><div><div style="font-size:10px;color:var(--muted);margin-bottom:2px">客戶</div><div style="font-size:12px">'+(quoteData.client||'—')+'</div></div><div><div style="font-size:10px;color:var(--muted);margin-bottom:2px">專案</div><div style="font-size:12px">'+(quoteData.project||'—')+'</div></div></div>'
+    +'<table style="width:100%;border-collapse:collapse;font-size:11px"><thead><tr>';
+  ['項目','單位','數量','單價','小計'].forEach(function(c){h+='<th style="text-align:left;padding:5px 6px;border-bottom:.5px solid var(--border);color:var(--muted);font-weight:normal;font-size:10px">'+c+'</th>';});
+  h+='</tr></thead><tbody>';
+  quoteData.items.forEach(function(it){h+='<tr><td style="padding:6px;border-bottom:.5px solid var(--border)">'+it.desc+'</td><td style="padding:6px;border-bottom:.5px solid var(--border);color:var(--muted)">'+it.unit+'</td><td style="padding:6px;border-bottom:.5px solid var(--border);text-align:right">'+it.qty+'</td><td style="padding:6px;border-bottom:.5px solid var(--border);text-align:right">'+it.price.toLocaleString()+'</td><td style="padding:6px;border-bottom:.5px solid var(--border);text-align:right;color:var(--clay-dark)">'+(it.qty*it.price).toLocaleString()+'</td></tr>';});
+  h+='</tbody></table><div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;margin-top:10px;padding-top:10px;border-top:.5px solid var(--border)"><div style="display:flex;gap:36px"><span style="font-size:11px;color:var(--muted)">稅前小計</span><span>NT$ '+tot.toLocaleString()+'</span></div><div style="display:flex;gap:36px"><span style="font-size:11px;color:var(--muted)">營業稅 5%</span><span>NT$ '+tax.toLocaleString()+'</span></div><div style="display:flex;gap:36px"><span>合計</span><span style="font-size:15px;font-style:italic;color:var(--clay-dark)">NT$ '+(tot+tax).toLocaleString()+'</span></div></div>'
+    +'<div style="margin-top:12px;padding:7px 11px;background:var(--sand);border-radius:3px;font-size:10px;color:var(--muted)">有效期限 30 天 · '+SC.bUja+' '+SC.bStudio+' '+SC.bArch+' · '+SC.footer.email+'</div></div></div>';
+  document.getElementById('qprev').innerHTML=h;
+}
+function genPDF(){
+  if(typeof window.jspdf==='undefined'){toast('PDF 模組載入中…');return;}
+  var {jsPDF}=window.jspdf,doc=new jsPDF({unit:'mm',format:'a4'});
+  var W=210,tot=qtot(),tax=Math.round(tot*.05),date=document.getElementById('qdate').value,qno='QT-'+Date.now().toString().slice(-6);
+  doc.setFillColor(245,240,232);doc.rect(0,0,W,36,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(92,74,53);
+  var uw=doc.getTextWidth(SC.bUja);doc.text(SC.bUja,14,16);doc.setTextColor(212,129,90);doc.text(SC.bStudio,14+uw+0.5,16);
+  doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(158,145,126);doc.text(SC.bArch,14,23);
+  doc.setFont('helvetica','bold');doc.setFontSize(14);doc.setTextColor(92,74,53);doc.text('QUOTATION',W-14,14,{align:'right'});
+  doc.setFontSize(7);doc.setFont('helvetica','normal');doc.setTextColor(158,145,126);doc.text(date,W-14,20,{align:'right'});doc.text(qno,W-14,25,{align:'right'});
+  var y=44;doc.setFillColor(237,230,214);doc.rect(14,y,W-28,20,'F');
+  doc.setFontSize(7);doc.setTextColor(92,74,53);doc.text('CLIENT',16,y+6);doc.setFont('helvetica','normal');doc.setTextColor(44,40,32);doc.setFontSize(10);doc.text(quoteData.client||'—',16,y+14);
+  doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(92,74,53);doc.text('PROJECT',80,y+6);doc.setFont('helvetica','normal');doc.setTextColor(44,40,32);doc.setFontSize(10);doc.text(quoteData.project||'—',80,y+14);
+  doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(92,74,53);doc.text('TYPE',150,y+6);doc.setFont('helvetica','normal');doc.setTextColor(44,40,32);doc.setFontSize(8);doc.text(quoteData.type,150,y+14);
+  y+=28;
+  doc.autoTable({startY:y,head:[['項目描述','單位','數量','單價','小計']],body:quoteData.items.map(function(it){return[it.desc,it.unit,it.qty+'','NT$ '+it.price.toLocaleString(),'NT$ '+(it.qty*it.price).toLocaleString()];}),theme:'plain',headStyles:{fillColor:[92,74,53],textColor:[250,248,244],fontSize:8,fontStyle:'bold',cellPadding:4},bodyStyles:{fontSize:9,textColor:[44,40,32],cellPadding:4},alternateRowStyles:{fillColor:[245,240,232]},columnStyles:{2:{halign:'right'},3:{halign:'right'},4:{halign:'right'}},margin:{left:14,right:14}});
+  y=doc.lastAutoTable.finalY+8;
+  doc.setDrawColor(200,168,130);doc.setLineWidth(.3);doc.line(14,y,W-14,y);y+=8;
+  var rx=W-14;
+  doc.setFontSize(8);doc.setTextColor(158,145,126);doc.text('稅前小計',rx-50,y,{align:'right'});doc.setTextColor(44,40,32);doc.text('NT$ '+tot.toLocaleString(),rx,y,{align:'right'});y+=7;
+  doc.setTextColor(158,145,126);doc.text('營業稅 5%',rx-50,y,{align:'right'});doc.setTextColor(44,40,32);doc.text('NT$ '+tax.toLocaleString(),rx,y,{align:'right'});y+=8;
+  doc.setFillColor(92,74,53);doc.rect(rx-76,y-5,62,10,'F');
+  doc.setTextColor(250,248,244);doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text('NT$ '+(tot+tax).toLocaleString(),rx-2,y+1.5,{align:'right'});
+  y+=18;doc.setFillColor(237,230,214);doc.rect(14,y,W-28,14,'F');doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(158,145,126);
+  doc.text('有效期限 30 天  ·  '+SC.bUja+' '+SC.bStudio+' '+SC.bArch+'  ·  '+SC.footer.address,W/2,y+5,{align:'center'});
+  doc.text(SC.footer.email+'  ·  '+SC.footer.phone,W/2,y+10,{align:'center'});
+  doc.save((quoteData.client||'客戶')+'_'+(quoteData.project||'專案')+'_報價單.pdf');toast('PDF 已下載');
+}
+function renderTeam(){
+  var m=document.getElementById('mainarea');
+  if(editingMemberId!==null){renderMemberEdit(editingMemberId);return;}
+  var h='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">'
+    +'<div style="font-size:18px;font-weight:normal">成員管理</div>'
+    +'<button class="btn-fill" style="font-size:12px" onclick="editingMemberId=\'new\';renderTeam()">+ 新增成員</button></div>';
+  h+='<table class="tbl"><thead><tr>';
+  ['成員','職稱','電子信箱','電話','操作'].forEach(function(c){h+='<th>'+c+'</th>';});
+  h+='</tr></thead><tbody>';
+  TEAM_MEMBERS.forEach(function(mem){
+    h+='<tr>'
+      +'<td><div style="display:flex;align-items:center;gap:9px"><div style="width:32px;height:32px;border-radius:50%;background:'+mem.color+';display:flex;align-items:center;justify-content:center;font-size:13px;font-style:italic;color:white;flex-shrink:0">'+mem.init+'</div>'+mem.name+'</div></td>'
+      +'<td style="font-size:12px;color:var(--muted)">'+mem.role+'</td>'
+      +'<td style="font-size:12px;color:var(--muted)">'+mem.email+'</td>'
+      +'<td style="font-size:12px;color:var(--muted)">'+mem.phone+'</td>'
+      +'<td style="white-space:nowrap">'
+      +'<button style="background:none;border:.5px solid var(--border);border-radius:2px;padding:4px 9px;font-size:11px;color:var(--muted);cursor:pointer;margin-right:4px" onclick="editingMemberId='+mem.id+';renderTeam()">編輯</button>'
+      +'<button style="background:none;border:.5px solid rgba(192,74,53,.3);border-radius:2px;padding:4px 9px;font-size:11px;color:var(--danger);cursor:pointer" onclick="delMember('+mem.id+')">刪除</button>'
+      +'</td></tr>';
+  });
+  h+='</tbody></table>';
+  m.innerHTML=h;
+}
+
+function renderMemberEdit(id){
+  var isNew=(id==='new');
+  var mem=isNew?{id:null,name:'',role:'',email:'',phone:'',color:'#8B6E4E',init:''}:TEAM_MEMBERS.find(function(x){return x.id===id;});
+  var m=document.getElementById('mainarea');
+  var PAL_COLORS=['#8B6E4E','#7A8C6E','#D4815A','#5C4A35','#C8A882','#B5C4A8','#9E917E','#B5726A'];
+  var h='<div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">'
+    +'<button class="btn-border" onclick="editingMemberId=null;renderTeam()">← 返回</button>'
+    +'<div style="font-size:18px;font-weight:normal">'+(isNew?'新增成員':'編輯成員')+'</div></div>';
+  h+='<div style="background:var(--sand);border:.5px solid var(--border);border-radius:4px;padding:22px;max-width:520px">';
+  h+='<div style="display:flex;gap:14px;align-items:center;margin-bottom:18px">';
+  h+='<div id="mem-av" style="width:54px;height:54px;border-radius:50%;background:'+mem.color+';display:flex;align-items:center;justify-content:center;font-size:20px;font-style:italic;color:white;flex-shrink:0">'+mem.init+'</div>';
+  h+='<div><div class="ef-label" style="margin-bottom:5px">頭像顏色</div><div style="display:flex;gap:6px;flex-wrap:wrap">';
+  PAL_COLORS.forEach(function(c){
+    h+='<div class="color-dot'+(mem.color===c?' sel':'')+'" style="background:'+c+'" onclick="document.getElementById(\'mem-av\').style.background=\''+c+'\';document.getElementById(\'mcolor\').value=\''+c+'\';this.parentElement.querySelectorAll(\'.color-dot\').forEach(function(x){x.classList.remove(\'sel\')});this.classList.add(\'sel\')"></div>';
+  });
+  h+='</div></div></div>';
+  h+='<input type="hidden" id="mcolor" value="'+mem.color+'">';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">';
+  h+=pf('姓名','mname',mem.name)+pf('縮寫（頭像顯示）','minit',mem.init);
+  h+='</div>';
+  h+='<div style="margin-bottom:12px"><div class="ef-label" style="margin-bottom:4px">職稱</div><input class="fi" id="mrole" value="'+mem.role+'"></div>';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">';
+  h+=pf('電子信箱','memail',mem.email)+pf('電話','mphone',mem.phone);
+  h+='</div>';
+  h+='<div style="display:flex;gap:9px">';
+  h+='<button class="btn-fill" onclick="saveMember('+(isNew?'\'new\'':mem.id)+')">儲存</button>';
+  h+='<button class="btn-border" onclick="editingMemberId=null;renderTeam()">取消</button></div>';
+  h+='</div>';
+  m.innerHTML=h;
+  /* sync init on name input */
+  var nameInp=document.getElementById('mname');
+  var initInp=document.getElementById('minit');
+  if(nameInp&&initInp){
+    nameInp.oninput=function(){
+      if(!initInp.value||initInp.value===nameInp.value.charAt(0)){
+        initInp.value=this.value.charAt(0);
+        var av=document.getElementById('mem-av');if(av)av.textContent=this.value.charAt(0);
+      }
+    };
+    initInp.oninput=function(){
+      var av=document.getElementById('mem-av');if(av)av.textContent=this.value;
+    };
+  }
+}
+
+function saveMember(id){
+  var isNew=(id==='new');
+  var obj={
+    id:isNew?(TEAM_MEMBERS.length?Math.max.apply(null,TEAM_MEMBERS.map(function(x){return x.id;}))+1:1):id,
+    name:document.getElementById('mname').value,
+    init:document.getElementById('minit').value||document.getElementById('mname').value.charAt(0),
+    role:document.getElementById('mrole').value,
+    email:document.getElementById('memail').value,
+    phone:document.getElementById('mphone').value,
+    color:document.getElementById('mcolor').value
+  };
+  if(isNew){TEAM_MEMBERS.push(obj);}
+  else{var idx=TEAM_MEMBERS.findIndex(function(x){return x.id===id;});if(idx>=0)TEAM_MEMBERS[idx]=obj;}
+  /* sync SC.team for website preview */
+  SC.team=TEAM_MEMBERS.map(function(m){return {name:m.name,role:m.role,color:m.color,init:m.init};});
+  editingMemberId=null;toast('成員已儲存');renderTeam();
+}
+
+function delMember(id){
+  if(!confirm('確定刪除此成員？'))return;
+  TEAM_MEMBERS=TEAM_MEMBERS.filter(function(x){return x.id!==id;});
+  SC.team=TEAM_MEMBERS.map(function(m){return {name:m.name,role:m.role,color:m.color,init:m.init};});
+  toast('已刪除');renderTeam();
+}
+
+function renderFinance(){
+  var m=document.getElementById('mainarea');
+  var total=FINANCE.monthly.reduce(function(s,r){return s+r.income;},0);
+  var totalExp=FINANCE.monthly.reduce(function(s,r){return s+r.expense;},0);
+  var h='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">'
+    +'<div style="font-size:18px;font-weight:normal">財務報表</div></div>';
+  /* summary cards */
+  h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px">';
+  var lastMonth=FINANCE.monthly[FINANCE.monthly.length-1];
+  [
+    {l:'本月收款',v:'NT$'+lastMonth.income.toLocaleString(),n:'',clr:'var(--clay-dark)'},
+    {l:'半年度累計',v:'NT$'+total.toLocaleString(),n:'',clr:'var(--clay-dark)'},
+    {l:'待收款',v:'NT$'+FINANCE.pending.toLocaleString(),n:'',clr:'var(--accent)'}
+  ].forEach(function(card){
+    h+='<div style="background:var(--sand);border:.5px solid var(--border);border-radius:4px;padding:16px">'
+      +'<div style="font-size:10px;color:var(--muted);letter-spacing:1px;font-family:sans-serif;text-transform:uppercase;margin-bottom:5px">'+card.l+'</div>'
+      +'<div style="font-size:22px;font-style:italic;color:'+card.clr+'">'+card.v+'</div>'
+      +'</div>';
+  });
+  h+='</div>';
+  /* monthly table */
+  h+='<div style="background:var(--sand);border:.5px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:16px">';
+  h+='<div style="padding:12px 16px;border-bottom:.5px solid var(--border);display:flex;justify-content:space-between;align-items:center">';
+  h+='<div style="font-size:13px">月度明細</div>';
+  h+='<button class="btn-border" style="font-size:11px" onclick="addFinanceRow()">+ 新增月份</button></div>';
+  h+='<table class="tbl"><thead><tr><th>月份</th><th>收款（NT$）</th><th>支出（NT$）</th><th>淨利</th><th>操作</th></tr></thead><tbody id="fin-tbody">';
+  FINANCE.monthly.forEach(function(row,i){
+    h+=finRow(row,i);
+  });
+  h+='</tbody></table></div>';
+  /* pending & note */
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+  h+='<div style="background:var(--sand);border:.5px solid var(--border);border-radius:4px;padding:16px">'
+    +'<div class="ef-label" style="margin-bottom:6px">待收款金額（NT$）</div>'
+    +'<input class="fi" type="number" id="fin-pending" value="'+FINANCE.pending+'" oninput="FINANCE.pending=+this.value;renderFinance()">'
+    +'</div>';
+  h+='<div style="background:var(--sand);border:.5px solid var(--border);border-radius:4px;padding:16px">'
+    +'<div class="ef-label" style="margin-bottom:6px">備註</div>'
+    +'<input class="fi" id="fin-note" value="'+FINANCE.note+'" oninput="FINANCE.note=this.value">'
+    +'</div>';
+  h+='</div>';
+  m.innerHTML=h;
+}
+
+function finRow(row,i){
+  var net=row.income-row.expense;
+  return '<tr>'
+    +'<td><input style="border:.5px solid var(--border);border-radius:2px;padding:4px 7px;font-size:12px;background:var(--warm-white);font-family:sans-serif;width:60px" value="'+row.month+'" oninput="FINANCE.monthly['+i+'].month=this.value"></td>'
+    +'<td><input style="border:.5px solid var(--border);border-radius:2px;padding:4px 7px;font-size:12px;background:var(--warm-white);font-family:sans-serif;width:110px;text-align:right" type="number" value="'+row.income+'" oninput="FINANCE.monthly['+i+'].income=+this.value;refreshFinSummary()"></td>'
+    +'<td><input style="border:.5px solid var(--border);border-radius:2px;padding:4px 7px;font-size:12px;background:var(--warm-white);font-family:sans-serif;width:110px;text-align:right" type="number" value="'+row.expense+'" oninput="FINANCE.monthly['+i+'].expense=+this.value;refreshFinSummary()"></td>'
+    +'<td style="font-size:12px;color:'+(net>=0?'var(--olive)':'var(--danger)')+'">NT$'+net.toLocaleString()+'</td>'
+    +'<td><button style="background:none;border:.5px solid rgba(192,74,53,.3);border-radius:2px;padding:3px 8px;font-size:11px;color:var(--danger);cursor:pointer" onclick="FINANCE.monthly.splice('+i+',1);renderFinance()">刪除</button></td>'
+    +'</tr>';
+}
+
+function refreshFinSummary(){
+  /* light refresh: just re-render */
+  renderFinance();
+}
+
+function addFinanceRow(){
+  FINANCE.monthly.push({month:'新月份',income:0,expense:0});
+  renderFinance();
+}
+
+function renderSettings(){
+  var h='<div style="font-size:18px;font-weight:normal;margin-bottom:14px">系統設定</div>';
+  /* export/import card */
+  h+='<div style="background:var(--sand);border:.5px solid var(--border);border-radius:4px;padding:20px;margin-bottom:14px">';
+  h+='<div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-family:sans-serif;margin-bottom:6px">網站內容備份</div>';
+  h+='<div style="font-size:13px;color:var(--charcoal);margin-bottom:14px;line-height:1.7">匯出目前所有編輯內容為 JSON 檔案，下次可匯入還原。</div>';
+  h+='<div style="display:flex;gap:10px">';
+  h+='<button class="btn-fill" style="font-size:12px" onclick="exportSettings()">↓ 匯出設定</button>';
+  h+='<button class="btn-border" style="font-size:12px" onclick="importSettings()">↑ 匯入設定</button>';
+  h+='</div>';
+  h+='</div>';
+  var h2=h;h=h2
+    +'<div style="background:var(--sand);border:.5px solid var(--border);border-radius:4px;padding:20px;margin-bottom:14px">'
+    +'<div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-family:sans-serif;margin-bottom:14px">公司帳號設定</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">'
+    +'<div class="mfl"><label style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-family:sans-serif;margin-bottom:4px;display:block">帳號名稱</label><input class="fi" value="'+CU+'" onchange="CU=this.value"></div>'
+    +'<div class="mfl"><label style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-family:sans-serif;margin-bottom:4px;display:block">更新密碼</label><input class="fi" type="password" id="np" placeholder="輸入新密碼（留空不更改）"></div>'
+    +'</div><div style="margin-top:14px"><button class="btn-fill" style="font-size:12px" onclick="svs()"><i class="ti ti-check"></i> 儲存設定</button></div></div>'
+    +'<div style="background:var(--sand);border:.5px solid var(--border);border-radius:4px;padding:18px">'
+    +'<div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-family:sans-serif;margin-bottom:8px">目前登入狀態</div>'
+    +'<div style="font-size:13px;color:var(--charcoal);display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:var(--olive)"></div>公司帳號 · <strong>'+CU+'</strong> · 已登入</div>'
+    +'<div style="font-size:12px;color:var(--muted);margin-top:4px;font-family:sans-serif">所有員工共用此帳號登入後台系統</div></div>';
+  document.getElementById('mainarea').innerHTML=h;
+}
+function svs(){var np=document.getElementById('np').value;if(np) CP=np;toast('設定已儲存');}
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}
+renderNavAuth();goPage('home');
+try{
+  var _su=localStorage.getItem('uja_u'),_sp=localStorage.getItem('uja_p');
+  if(_su&&_sp){
+    var _iu=document.getElementById('iu'),_ip=document.getElementById('ip'),_rm=document.getElementById('remember-me');
+    if(_iu)_iu.value=_su;
+    if(_ip)_ip.value=_sp;
+    if(_rm)_rm.checked=true;
+  }
+}catch(e){}
+
+function renderPortDetail(idx){
+  var p=PORTFOLIO[idx]; if(!p) return;
+  var bg=['#D4B896','#8B9E7D','#E8C4A0','#B8A898','#A8B89A','#C4A882'];
+  var c=document.getElementById('port-detail-content'); if(!c) return;
+
+  /* hero */
+  var heroHTML='<div class="port-detail-hero" style="background:'+bg[idx%6]+'">';
+  if(p.imgs.length>0){
+    heroHTML+='<img id="port-hero-img" src="'+p.imgs[0]+'" alt="'+p.name+'" style="cursor:zoom-in" onclick="lbOpen('+JSON.stringify([]).replace('[]','IMGS_PH')+',0)">';
+  } else {
+    heroHTML+='<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%"><span style="font-size:14px;color:rgba(255,255,255,.6);font-family:sans-serif;letter-spacing:2px">'+p.catName+'</span></div>';
+  }
+  heroHTML+='</div>';
+
+  /* breadcrumb */
+  var nav='<div style="padding:14px 38px 0;font-size:12px;color:var(--muted);font-family:sans-serif">'
+    +'<span style="cursor:pointer;color:var(--accent)" onclick="goPage(\'port\')">← 返回作品集</span></div>';
+
+  /* body */
+  var body='<div style="padding:28px 38px 52px;max-width:900px">';
+  body+='<div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:24px">';
+  body+='<div>';
+  body+='<div style="font-size:11px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;font-family:sans-serif;margin-bottom:8px">'+p.catName+'</div>';
+  body+='<h1 style="font-size:30px;font-weight:normal;color:var(--earth);line-height:1.2;margin-bottom:6px">'+p.name+'</h1>';
+  body+='<div style="font-size:13px;color:var(--muted);font-family:sans-serif">'+p.area+' · '+p.year+'</div>';
+  body+='</div></div>';
+
+  /* meta */
+  body+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px">';
+  [{k:'類型',v:p.catName},{k:'坪數',v:p.area||'—'},{k:'年份',v:p.year||'—'}].forEach(function(m){
+    body+='<div style="background:var(--sand);border:.5px solid var(--border);border-radius:2px;padding:8px 16px">'
+      +'<div style="font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;font-family:sans-serif;margin-bottom:3px">'+m.k+'</div>'
+      +'<div style="font-size:14px">'+m.v+'</div></div>';
+  });
+  body+='</div>';
+
+  /* desc */
+  if(p.desc){
+    body+='<div style="margin-bottom:24px;padding:18px 22px;background:var(--sand);border-left:3px solid var(--clay);border-radius:0 2px 2px 0">'
+      +'<p style="font-size:14px;color:var(--muted);line-height:1.9;margin:0">'+p.desc+'</p></div>';
+  }
+
+  /* gallery */
+  if(p.imgs.length>0){
+    body+='<div style="margin-bottom:28px"><h3 style="font-size:15px;font-weight:normal;color:var(--clay-dark);margin-bottom:12px;border-bottom:.5px solid var(--border);padding-bottom:8px">作品相片 <span style="font-size:11px;color:var(--muted);font-family:sans-serif">（點擊放大）</span></h3>';
+    body+='<div class="port-thumb-grid">';
+    p.imgs.forEach(function(img,ii){
+      body+='<img src="'+img+'" data-i="'+ii+'" onclick="lbOpenPortfolio('+idx+','+ii+')" title="點擊放大">';
+    });
+    body+='</div></div>';
+  }
+
+  /* cta */
+  body+='<div style="margin-top:36px;background:var(--earth);color:var(--warm-white);border-radius:4px;padding:28px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">'
+    +'<div><div style="font-size:18px;font-weight:normal;margin-bottom:5px">對這個空間感興趣？</div>'
+    +'<div style="font-size:13px;opacity:.7">歡迎與我們聯繫，討論您的設計需求</div></div>'
+    +'<a class="cta-link-white" onclick="goPage(\'contact\');return false;" href="#">預約諮詢 →</a>'
+    +'</div>';
+  body+='</div>';
+
+  c.innerHTML=nav+heroHTML+body+buildFooter();
+
+  /* wire up hero img click after DOM is set */
+  if(p.imgs.length>0){
+    var heroImg=document.getElementById('port-hero-img');
+    if(heroImg) heroImg.onclick=function(){lbOpen(p.imgs,0);};
+  }
+}
+
+function lbOpenPortfolio(portIdx, imgIdx){
+  var p=PORTFOLIO[portIdx];
+  if(p&&p.imgs.length) lbOpen(p.imgs, imgIdx);
+}
+
+
+function renderLegalPage(type){
+  var data=SC.footer[type]; if(!data) return;
+  var cEl=document.getElementById(type+'-content');
+  var fEl=document.getElementById(type+'-footer');
+  if(cEl) cEl.innerHTML='<div class="legal-content">'+data.content+'</div>';
+  if(fEl) fEl.innerHTML=buildFooter();
+}
+
+var _lbImgs=[], _lbIdx=0;
+
+function lbOpen(imgs, idx){
+  _lbImgs=imgs; _lbIdx=idx;
+  lbShow();
+  var ov=document.getElementById('lightbox-overlay');
+  if(ov) ov.classList.add('open');
+}
+
+function lbShow(){
+  var img=document.getElementById('lightbox-img');
+  var ctr=document.getElementById('lightbox-counter');
+  var prev=document.getElementById('lightbox-prev');
+  var next=document.getElementById('lightbox-next');
+  if(!img) return;
+  img.style.opacity='0';
+  img.src=_lbImgs[_lbIdx];
+  img.onload=function(){img.style.opacity='1';};
+  if(ctr) ctr.textContent=(_lbIdx+1)+' / '+_lbImgs.length;
+  if(prev) prev.style.visibility=_lbImgs.length>1?'visible':'hidden';
+  if(next) next.style.visibility=_lbImgs.length>1?'visible':'hidden';
+}
+
+function lbStep(dir){
+  _lbIdx=(_lbIdx+dir+_lbImgs.length)%_lbImgs.length;
+  lbShow();
+}
+
+function lbHide(){
+  var ov=document.getElementById('lightbox-overlay');
+  if(ov) ov.classList.remove('open');
+}
+
+function lbClose(e){
+  if(e.target.id==='lightbox-overlay') lbHide();
+}
+
+/* keyboard nav */
+document.addEventListener('keydown',function(e){
+  var ov=document.getElementById('lightbox-overlay');
+  if(!ov||!ov.classList.contains('open')) return;
+  if(e.key==='ArrowLeft') lbStep(-1);
+  else if(e.key==='ArrowRight') lbStep(1);
+  else if(e.key==='Escape') lbHide();
+});
+
+function exportSettings(){
+  var data={
+    SC: SC,
+    PORTFOLIO: PORTFOLIO.map(function(p){
+      return {id:p.id,name:p.name,cat:p.cat,catName:p.catName,area:p.area,year:p.year,color:p.color,desc:p.desc||'',imgs:p.imgs};
+    }),
+    PROJECTS: PROJECTS,
+    TEAM_MEMBERS: TEAM_MEMBERS,
+    FINANCE: FINANCE
+  };
+  var json=JSON.stringify(data,null,2);
+  var blob=new Blob([json],{type:'application/json'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='uja-studio-settings.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('設定已匯出');
+}
+
+function importSettings(){
+  var input=document.createElement('input');
+  input.type='file';input.accept='.json';
+  input.onchange=function(e){
+    var file=e.target.files[0];if(!file)return;
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      try{
+        var data=JSON.parse(ev.target.result);
+        if(data.SC) Object.assign(SC, data.SC);
+        if(data.PORTFOLIO) PORTFOLIO=data.PORTFOLIO;
+        if(data.PROJECTS) PROJECTS=data.PROJECTS;
+        if(data.TEAM_MEMBERS){
+          TEAM_MEMBERS=data.TEAM_MEMBERS;
+          SC.team=TEAM_MEMBERS.map(function(m){return {name:m.name,role:m.role,color:m.color,init:m.init};});
+        }
+        if(data.FINANCE) FINANCE=data.FINANCE;
+        /* apply accent color */
+        if(SC.accentColor) document.documentElement.style.setProperty('--accent',SC.accentColor);
+        toast('設定已匯入！正在重新載入...');
+        setTimeout(function(){showSec('web-editor');},800);
+      } catch(err){
+        toast('匯入失敗：檔案格式錯誤');
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function navPrivacy(){goPage('privacy');}
+function navTerms(){goPage('terms');}
+function navPort(i){goPage('port-detail',i);}
+</script>
+</body>
+</html>
