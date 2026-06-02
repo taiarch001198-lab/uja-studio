@@ -196,6 +196,108 @@ input:checked+.togslider:before{transform:translateX(16px);background:var(--oliv
   letter-spacing:2px;z-index:1001;
 }
 .port-thumb-grid img{cursor:zoom-in;}
+
+/* ═══════════════════════════════
+   手機版響應式設計
+═══════════════════════════════ */
+@media (max-width: 768px){
+
+  /* NAV */
+  .nav{padding:12px 16px;}
+  .logo-uja,.logo-studio{font-size:14px;}
+  .logo-arch{font-size:10px;}
+  .nl{font-size:12px;}
+  #navauth button{font-size:11px;padding:6px 10px;}
+
+  /* HERO */
+  .hero{grid-template-columns:1fr !important;display:block !important;}
+  .herotext{padding:32px 20px !important;}
+  .herotitle{font-size:26px !important;}
+  .herodesc{font-size:13px !important;}
+  .ctarow{flex-wrap:wrap;}
+  .cta-link-fill,.cta-link-outline{font-size:12px;padding:9px 16px;}
+  .herovis{display:none !important;}
+
+  /* STATS */
+  .statsbar{grid-template-columns:repeat(2,1fr) !important;}
+  .statitem{padding:14px 12px !important;}
+  .statnum{font-size:20px !important;}
+
+  /* SECTIONS */
+  .sec{padding:32px 20px !important;}
+  .sectitle{font-size:22px !important;}
+  .svcgrid{grid-template-columns:1fr !important;}
+  .svcard{padding:16px !important;}
+
+  /* PROCESS STEPS */
+  .psteps{grid-template-columns:repeat(2,1fr) !important;}
+  .pstep{padding:16px !important;}
+  .pnum{font-size:22px !important;}
+
+  /* TEAM */
+  .teamsec{padding:32px 20px !important;}
+  .teamgrid{grid-template-columns:repeat(2,1fr) !important;}
+
+  /* CTA BAND */
+  .ctaband{flex-direction:column !important;padding:28px 20px !important;gap:16px !important;}
+  .ctaband h2{font-size:18px !important;}
+  .cta-link-white{width:100%;text-align:center;}
+
+  /* PORTFOLIO */
+  .portgrid{grid-template-columns:repeat(2,1fr) !important;gap:10px !important;}
+
+  /* FOOTER */
+  .site-footer{padding:32px 20px 20px !important;}
+  .footer-grid{grid-template-columns:1fr !important;gap:24px !important;}
+  .footer-bottom{flex-direction:column;gap:10px;text-align:center;}
+
+  /* PORT DETAIL */
+  .port-detail-hero{height:220px !important;}
+  .port-thumb-grid{grid-template-columns:repeat(3,1fr) !important;}
+  [style*="padding:28px 38px"]{padding:20px 16px !important;}
+  [style*="padding:28px 32px"]{padding:20px 16px !important;flex-direction:column !important;}
+
+  /* LEGAL PAGES */
+  .legal-content h2{font-size:20px !important;}
+  .legal-content h3{font-size:14px !important;}
+
+  /* APP BACKEND */
+  .appshell{flex-direction:column !important;height:auto !important;}
+  .sidebar{width:100% !important;height:auto !important;border-right:none !important;border-bottom:.5px solid var(--border);}
+  .sblbl{display:none;}
+  .sbitem{display:inline-flex !important;padding:8px 12px !important;font-size:11px !important;border-left:none !important;border-bottom:2px solid transparent !important;}
+  .sbitem.on{border-bottom-color:var(--accent) !important;border-left:none !important;}
+  .sidebar .sb-brand{display:none;}
+  #sidebar{display:flex;flex-wrap:wrap;overflow-x:auto;padding:0;}
+  .mainarea{padding:16px !important;max-height:none !important;}
+  .ed-grid{grid-template-columns:1fr !important;height:auto !important;}
+  .preview-wrap{display:none !important;}
+  .ed-panel{max-height:none !important;overflow-y:visible !important;}
+
+  /* CONTACT FORM */
+  [style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr !important;}
+
+  /* LIGHTBOX */
+  #lightbox-prev{left:6px;padding:10px 12px;}
+  #lightbox-next{right:6px;padding:10px 12px;}
+  #lightbox-img{max-width:95vw !important;max-height:80vh !important;}
+
+  /* LOGIN */
+  .loginbg{padding:20px 12px !important;}
+  .lcard{width:100% !important;max-width:360px;padding:28px 20px !important;}
+
+  /* BACK BUTTON */
+  .btn-border,.btn-fill{font-size:12px !important;padding:7px 12px !important;}
+}
+
+@media (max-width: 480px){
+  .portgrid{grid-template-columns:1fr !important;}
+  .psteps{grid-template-columns:1fr !important;}
+  .teamgrid{grid-template-columns:repeat(2,1fr) !important;}
+  .statsbar{grid-template-columns:repeat(2,1fr) !important;}
+  .herotitle{font-size:22px !important;}
+  .port-thumb-grid{grid-template-columns:repeat(2,1fr) !important;}
+}
 </style>
 </head>
 <body>
@@ -700,6 +802,10 @@ function renderWE(){
   m.appendChild(top);
   document.getElementById('em-btn').onclick=function(){setEM(!editMode);};
   document.getElementById('prev-btn').onclick=function(){goPage('home');};
+  var expBtn=document.createElement('button');expBtn.className='btn-border';
+  expBtn.style.fontSize='12px';expBtn.textContent='↓ 匯出設定';
+  expBtn.onclick=exportSettings;
+  document.getElementById('prev-btn').parentNode.insertBefore(expBtn, document.getElementById('prev-btn'));
 
   if(editMode){
     var tip=document.createElement('div');
@@ -1483,7 +1589,17 @@ function addFinanceRow(){
 }
 
 function renderSettings(){
-  var h='<div style="font-size:18px;font-weight:normal;margin-bottom:14px">系統設定</div>'
+  var h='<div style="font-size:18px;font-weight:normal;margin-bottom:14px">系統設定</div>';
+  /* export/import card */
+  h+='<div style="background:var(--sand);border:.5px solid var(--border);border-radius:4px;padding:20px;margin-bottom:14px">';
+  h+='<div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-family:sans-serif;margin-bottom:6px">網站內容備份</div>';
+  h+='<div style="font-size:13px;color:var(--charcoal);margin-bottom:14px;line-height:1.7">匯出目前所有編輯內容為 JSON 檔案，下次可匯入還原。</div>';
+  h+='<div style="display:flex;gap:10px">';
+  h+='<button class="btn-fill" style="font-size:12px" onclick="exportSettings()">↓ 匯出設定</button>';
+  h+='<button class="btn-border" style="font-size:12px" onclick="importSettings()">↑ 匯入設定</button>';
+  h+='</div>';
+  h+='</div>';
+  var h2=h;h=h2
     +'<div style="background:var(--sand);border:.5px solid var(--border);border-radius:4px;padding:20px;margin-bottom:14px">'
     +'<div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-family:sans-serif;margin-bottom:14px">公司帳號設定</div>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">'
@@ -1637,6 +1753,56 @@ document.addEventListener('keydown',function(e){
   else if(e.key==='ArrowRight') lbStep(1);
   else if(e.key==='Escape') lbHide();
 });
+
+function exportSettings(){
+  var data={
+    SC: SC,
+    PORTFOLIO: PORTFOLIO.map(function(p){
+      return {id:p.id,name:p.name,cat:p.cat,catName:p.catName,area:p.area,year:p.year,color:p.color,desc:p.desc||'',imgs:p.imgs};
+    }),
+    PROJECTS: PROJECTS,
+    TEAM_MEMBERS: TEAM_MEMBERS,
+    FINANCE: FINANCE
+  };
+  var json=JSON.stringify(data,null,2);
+  var blob=new Blob([json],{type:'application/json'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='uja-studio-settings.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('設定已匯出');
+}
+
+function importSettings(){
+  var input=document.createElement('input');
+  input.type='file';input.accept='.json';
+  input.onchange=function(e){
+    var file=e.target.files[0];if(!file)return;
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      try{
+        var data=JSON.parse(ev.target.result);
+        if(data.SC) Object.assign(SC, data.SC);
+        if(data.PORTFOLIO) PORTFOLIO=data.PORTFOLIO;
+        if(data.PROJECTS) PROJECTS=data.PROJECTS;
+        if(data.TEAM_MEMBERS){
+          TEAM_MEMBERS=data.TEAM_MEMBERS;
+          SC.team=TEAM_MEMBERS.map(function(m){return {name:m.name,role:m.role,color:m.color,init:m.init};});
+        }
+        if(data.FINANCE) FINANCE=data.FINANCE;
+        /* apply accent color */
+        if(SC.accentColor) document.documentElement.style.setProperty('--accent',SC.accentColor);
+        toast('設定已匯入！正在重新載入...');
+        setTimeout(function(){showSec('web-editor');},800);
+      } catch(err){
+        toast('匯入失敗：檔案格式錯誤');
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
 
 function navPrivacy(){goPage('privacy');}
 function navTerms(){goPage('terms');}
