@@ -1511,7 +1511,7 @@ function renderFinance(){
     +'<div style="font-size:18px;font-weight:normal">財務報表</div></div>';
   /* summary cards */
   h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px">';
-  var lastMonth=FINANCE.monthly[FINANCE.monthly.length-1];
+  var lastMonth=FINANCE.monthly.length>0?FINANCE.monthly[FINANCE.monthly.length-1]:{income:0,expense:0};
   [
     {l:'本月收款',v:'NT$'+lastMonth.income.toLocaleString(),n:'',clr:'var(--clay-dark)'},
     {l:'半年度累計',v:'NT$'+total.toLocaleString(),n:'',clr:'var(--clay-dark)'},
