@@ -2082,6 +2082,10 @@ function renderPortEdit(id){
   h+='<div class="modal-grid" style="margin-bottom:14px">'+mf2('坪數','pe-a',p.area)+mf2('年份','pe-y',p.year)+'</div>';
   h+='<div style="margin-bottom:14px"><div class="ed-label" style="margin-bottom:6px">Description</div><textarea class="modal-inp" id="pe-d" rows="3" style="resize:none">'+p.desc+'</textarea></div>';
   h+='<div class="ed-label" style="margin-bottom:8px">作品照片（'+p.imgs.length+'）</div>';
+  h+='<div style="display:flex;gap:8px;margin-bottom:8px" id="url-row">';
+  h+='<input id="img-url-inp" type="text" class="modal-inp" style="flex:1;font-size:12px" placeholder="貼上圖片網址（https://...）">';
+  h+='<button onclick="addImgUrl()" class="nav-btn-fill" style="font-size:10px;padding:8px 14px;white-space:nowrap;flex-shrink:0">+ 加入</button>';
+  h+='</div>';
 
   h+='<div class="drop-zone" id="dz" onclick="document.getElementById(\'fi-inp\').click()" ondragover="event.preventDefault();this.classList.add(\'dov\')" ondragleave="this.classList.remove(\'dov\')" ondrop="hdrop(event)">'
     +'<div style="font-size:9px;letter-spacing:2px;color:var(--text3);text-transform:uppercase">Click or drag to upload</div>'
@@ -2094,32 +2098,7 @@ function renderPortEdit(id){
   h+='</div>';
   document.getElementById('mainarea').innerHTML=h;
 
-  /* 用 DOM 建立網址輸入欄，確保可以正常貼上 */
-  var photoLblEl=document.querySelector('#mainarea .ed-label');
-  /* 找到作品照片的 label */
-  var allLabels=document.querySelectorAll('#mainarea .ed-label');
-  var photoLabel=null;
-  allLabels.forEach(function(el){if(el.textContent.indexOf('照片')>=0||el.textContent.indexOf('Photo')>=0)photoLabel=el;});
 
-  if(photoLabel){
-    var urlWrap=document.createElement('div');
-    urlWrap.style.cssText='display:flex;gap:8px;margin-bottom:10px;margin-top:4px';
-    var urlInp=document.createElement('input');
-    urlInp.id='img-url-inp';
-    urlInp.className='modal-inp';
-    urlInp.placeholder='貼上圖片網址（https://raw.githubusercontent.com/...）';
-    urlInp.style.cssText='flex:1;font-size:12px';
-    urlInp.type='text';
-    var urlBtn=document.createElement('button');
-    urlBtn.className='nav-btn-fill';
-    urlBtn.style.cssText='font-size:10px;white-space:nowrap;padding:8px 14px;flex-shrink:0';
-    urlBtn.textContent='+ 加入';
-    urlBtn.onclick=function(){addImgUrl();};
-    urlInp.onkeydown=function(e){if(e.key==='Enter')addImgUrl();};
-    urlWrap.appendChild(urlInp);
-    urlWrap.appendChild(urlBtn);
-    photoLabel.parentNode.insertBefore(urlWrap,photoLabel.nextSibling);
-  }
 }
 function addImgUrl(){
   var inp=document.getElementById('img-url-inp');
