@@ -639,7 +639,8 @@ var SC={
     ],
     privacy:{title:'隱私政策',content:'<p>UJA Studio Architect 重視您的隱私權。當您填寫聯絡表單時，我們蒐集的個人資料僅用於提供設計諮詢服務，不會提供給第三方。如有疑問請來信：taiarch001198@gmail.com</p>'},
     terms:{title:'服務條款',content:'<p>使用本網站即表示您同意本服務條款。本公司所有設計成果之著作權均屬本公司所有。設計費用依合約約定支付。如有疑問請來信：taiarch001198@gmail.com</p>'}
-  }
+  },
+  fonts:{heading:'Georgia, serif',body:'Helvetica Neue, Arial, sans-serif',bodySize:'14px',letterSpacing:'normal',headingSize:'',headingWeight:'300',headingStyle:'normal',headingDecoration:'none',headingTransform:'none',bodyWeight:'400',bodyStyle:'normal',bodyDecoration:'none',bodyTransform:'none'}
 };
 var PORTFOLIO=[],pinnedPorts=[],  /* 釘選的作品集 id 清單 */PROJECTS=[],TEAM_MEMBERS=[],FINANCE={monthly:[],pending:0,note:''};
 var editingPortId=null,editingProjId=null,editingMemberId=null,CS='web-editor';
@@ -1486,7 +1487,7 @@ function applySelFormat(styleFn){
   }
 }
 function applyFonts(){
-  if(!SC.fonts)return;
+  if(!SC.fonts)SC.fonts={};
   var r=document.documentElement;
   if(SC.fonts.heading)r.style.setProperty('--serif',SC.fonts.heading);
   if(SC.fonts.body){r.style.setProperty('--sans',SC.fonts.body);document.body.style.fontFamily=SC.fonts.body;}
@@ -1897,12 +1898,13 @@ function renderWE(){
     confirmBtn.style.cssText='flex:1;font-size:10px;letter-spacing:1px';
     confirmBtn.textContent='✓ 確認儲存';
     confirmBtn.onclick=function(){
+      if(!SC.fonts)SC.fonts={};
       Object.assign(SC.fonts, pending);
       applyFonts();
       rp();
       dirty=false;
       updateBtns();
-      toast('字體設定已儲存');
+      toast('字體設定已儲存 ✓');
     };
     var cancelBtn=document.createElement('button');
     cancelBtn.className='nav-btn';
