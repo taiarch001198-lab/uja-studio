@@ -1492,15 +1492,14 @@ function applyFonts(){
   if(SC.fonts.body){r.style.setProperty('--sans',SC.fonts.body);document.body.style.fontFamily=SC.fonts.body;}
   if(SC.fonts.bodySize)document.body.style.fontSize=SC.fonts.bodySize;
   if(SC.fonts.letterSpacing)document.body.style.letterSpacing=SC.fonts.letterSpacing;
-  /* heading styles */
   var heads=document.querySelectorAll('.hero-title,.sec-title,.cta-title,.detail-title,.legal-title,.service-name,.process-name');
   heads.forEach(function(el){
     if(SC.fonts.headingWeight)el.style.fontWeight=SC.fonts.headingWeight;
     if(SC.fonts.headingStyle)el.style.fontStyle=SC.fonts.headingStyle;
     if(SC.fonts.headingDecoration)el.style.textDecoration=SC.fonts.headingDecoration;
     if(SC.fonts.headingTransform)el.style.textTransform=SC.fonts.headingTransform;
+    if(SC.fonts.headingSize)el.style.fontSize=SC.fonts.headingSize;
   });
-  /* body styles */
   if(SC.fonts.bodyWeight)document.body.style.fontWeight=SC.fonts.bodyWeight;
   if(SC.fonts.bodyStyle)document.body.style.fontStyle=SC.fonts.bodyStyle;
   if(SC.fonts.bodyDecoration)document.body.style.textDecoration=SC.fonts.bodyDecoration;
@@ -1789,16 +1788,18 @@ function renderWE(){
     var SO=[{l:'標準',v:'normal'},{l:'斜體',v:'italic'},{l:'傾斜',v:'oblique'}];
     var DO=[{l:'無',v:'none'},{l:'底線',v:'underline'},{l:'刪除線',v:'line-through'},{l:'上線',v:'overline'}];
     var TO=[{l:'標準',v:'none'},{l:'全大寫',v:'uppercase'},{l:'全小寫',v:'lowercase'},{l:'首字大寫',v:'capitalize'}];
+    var HSZ=[{l:'32px',v:'32px'},{l:'36px',v:'36px'},{l:'40px',v:'40px'},{l:'48px',v:'48px'},{l:'56px',v:'56px'},{l:'64px',v:'64px'},{l:'72px',v:'72px'},{l:'80px',v:'80px'},{l:'96px',v:'96px'}];
     var SZO=[{l:'11px',v:'11px'},{l:'12px',v:'12px'},{l:'13px',v:'13px'},{l:'14px',v:'14px'},{l:'15px',v:'15px'},{l:'16px',v:'16px'},{l:'17px',v:'17px'},{l:'18px',v:'18px'}];
     var LSO=[{l:'標準',v:'normal'},{l:'緊縮 -1px',v:'-1px'},{l:'緊縮 -0.5px',v:'-0.5px'},{l:'寬鬆 1px',v:'1px'},{l:'寬鬆 2px',v:'2px'},{l:'寬鬆 3px',v:'3px'}];
 
-    /* pending state – changes previewed but not committed until "確認" */
-    var pending=JSON.parse(JSON.stringify(SC.fonts||{}));
+    /* 待確認的暫存 */
+    if(!SC.fonts)SC.fonts={};
+    var pending=JSON.parse(JSON.stringify(SC.fonts));
     var dirty=false;
 
     function mkSec(p,txt,mt){
       var d=document.createElement('div');
-      d.style.cssText='font-size:9px;letter-spacing:2px;color:var(--accent);text-transform:uppercase;padding-bottom:6px;border-bottom:.5px solid var(--line);margin-bottom:10px'+(mt?';margin-top:'+mt:'');
+      d.style.cssText='font-size:10px;letter-spacing:2px;color:var(--accent);text-transform:uppercase;padding-bottom:6px;border-bottom:.5px solid var(--line);margin-bottom:10px'+(mt?';margin-top:'+mt:'');
       d.textContent=txt;p.appendChild(d);
     }
     function mkSel(p,lbl,opts,gv,sv){
@@ -1806,58 +1807,61 @@ function renderWE(){
       var l=document.createElement('div');l.className='ed-label';l.style.marginBottom='4px';l.textContent=lbl;w.appendChild(l);
       var s=document.createElement('select');s.className='ed-inp';s.style.marginBottom='0';
       opts.forEach(function(o){var op=document.createElement('option');op.value=o.v;op.textContent=o.l;if(gv()===o.v)op.selected=true;s.appendChild(op);});
-      s.onchange=function(){sv(this.value);dirty=true;previewFonts();updateBtns();};
+      s.onchange=function(){sv(this.value);dirty=true;applyFontsPending();updateBtns();};
       w.appendChild(s);p.appendChild(w);
     }
 
-    function previewFonts(){
-      /* apply pending to preview only – not SC */
-      var r=document.getElementById('ed-prev-body');if(!r)return;
+    function applyFontsPending(){
+      /* 套用 pending 到整個頁面（預覽用）*/
+      var r=document.documentElement;
       if(pending.heading)r.style.setProperty('--serif',pending.heading);
-      if(pending.body)r.style.fontFamily=pending.body;
-      if(pending.bodySize)r.style.fontSize=pending.bodySize;
-      if(pending.letterSpacing)r.style.letterSpacing=pending.letterSpacing;
-      r.querySelectorAll('.hero-title,.sec-title,.cta-title,.detail-title,.legal-title,.service-name,.process-name').forEach(function(el){
+      if(pending.body){r.style.setProperty('--sans',pending.body);document.body.style.fontFamily=pending.body;}
+      if(pending.bodySize)document.body.style.fontSize=pending.bodySize;
+      if(pending.letterSpacing)document.body.style.letterSpacing=pending.letterSpacing;
+      /* 標題元素 */
+      document.querySelectorAll('.hero-title,.sec-title,.cta-title,.service-name,.process-name,.detail-title,.about-sec .sec-title').forEach(function(el){
         if(pending.headingWeight)el.style.fontWeight=pending.headingWeight;
         if(pending.headingStyle)el.style.fontStyle=pending.headingStyle;
         if(pending.headingDecoration)el.style.textDecoration=pending.headingDecoration;
         if(pending.headingTransform)el.style.textTransform=pending.headingTransform;
+        if(pending.headingSize)el.style.fontSize=pending.headingSize;
       });
-      if(pending.bodyWeight)r.style.fontWeight=pending.bodyWeight;
-      if(pending.bodyStyle)r.style.fontStyle=pending.bodyStyle;
-      if(pending.bodyDecoration)r.style.textDecoration=pending.bodyDecoration;
-      if(pending.bodyTransform)r.style.textTransform=pending.bodyTransform;
+      /* hero-title 特別處理 clamp */
+      if(pending.headingSize){
+        document.querySelectorAll('.hero-title').forEach(function(el){el.style.fontSize=pending.headingSize;});
+      }
+      if(pending.bodyWeight)document.body.style.fontWeight=pending.bodyWeight;
+      if(pending.bodyStyle)document.body.style.fontStyle=pending.bodyStyle;
     }
 
-    /* scrollable inner wrapper */
-    var inner=document.createElement('div');
-    inner.style.cssText='overflow:visible;padding-right:2px';
-    b.appendChild(inner);
+    /* ── 標題 ── */
+    mkSec(b,'標題文字');
+    mkSel(b,'字體',FO,function(){return pending.heading||'Georgia, serif';},function(v){pending.heading=v;});
+    mkSel(b,'大小',HSZ,function(){return pending.headingSize||'';},function(v){pending.headingSize=v;});
+    mkSel(b,'粗細',WO,function(){return pending.headingWeight||'300';},function(v){pending.headingWeight=v;});
+    mkSel(b,'樣式',SO,function(){return pending.headingStyle||'normal';},function(v){pending.headingStyle=v;});
+    mkSel(b,'裝飾',DO,function(){return pending.headingDecoration||'none';},function(v){pending.headingDecoration=v;});
+    mkSel(b,'大小寫',TO,function(){return pending.headingTransform||'none';},function(v){pending.headingTransform=v;});
 
-    mkSec(inner,'標題文字');
-    mkSel(inner,'字體',FO,function(){return pending.heading||'Georgia, serif';},function(v){pending.heading=v;});
-    mkSel(inner,'粗細',WO,function(){return pending.headingWeight||'300';},function(v){pending.headingWeight=v;});
-    mkSel(inner,'樣式',SO,function(){return pending.headingStyle||'normal';},function(v){pending.headingStyle=v;});
-    mkSel(inner,'裝飾',DO,function(){return pending.headingDecoration||'none';},function(v){pending.headingDecoration=v;});
-    mkSel(inner,'大小寫',TO,function(){return pending.headingTransform||'none';},function(v){pending.headingTransform=v;});
+    /* ── 內文 ── */
+    mkSec(b,'內文 / 介面','14px');
+    mkSel(b,'字體',FO,function(){return pending.body||'Helvetica Neue, Arial, sans-serif';},function(v){pending.body=v;});
+    mkSel(b,'大小',SZO,function(){return pending.bodySize||'13px';},function(v){pending.bodySize=v;});
+    mkSel(b,'粗細',WO,function(){return pending.bodyWeight||'400';},function(v){pending.bodyWeight=v;});
+    mkSel(b,'樣式',SO,function(){return pending.bodyStyle||'normal';},function(v){pending.bodyStyle=v;});
+    mkSel(b,'裝飾',DO,function(){return pending.bodyDecoration||'none';},function(v){pending.bodyDecoration=v;});
+    mkSel(b,'大小寫',TO,function(){return pending.bodyTransform||'none';},function(v){pending.bodyTransform=v;});
 
-    mkSec(inner,'內文 / 介面','14px');
-    mkSel(inner,'字體',FO,function(){return pending.body||'Helvetica Neue, Arial, sans-serif';},function(v){pending.body=v;});
-    mkSel(inner,'粗細',WO,function(){return pending.bodyWeight||'400';},function(v){pending.bodyWeight=v;});
-    mkSel(inner,'樣式',SO,function(){return pending.bodyStyle||'normal';},function(v){pending.bodyStyle=v;});
-    mkSel(inner,'裝飾',DO,function(){return pending.bodyDecoration||'none';},function(v){pending.bodyDecoration=v;});
-    mkSel(inner,'大小寫',TO,function(){return pending.bodyTransform||'none';},function(v){pending.bodyTransform=v;});
-
-    mkSec(inner,'通用設定','14px');
-    mkSel(inner,'字體大小',SZO,function(){return pending.bodySize||'13px';},function(v){pending.bodySize=v;});
-    mkSel(inner,'字元間距',LSO,function(){return pending.letterSpacing||'normal';},function(v){pending.letterSpacing=v;});
+    /* ── 通用 ── */
+    mkSec(b,'通用設定','14px');
+    mkSel(b,'字元間距',LSO,function(){return pending.letterSpacing||'normal';},function(v){pending.letterSpacing=v;});
 
     /* ── 選取文字格式化 ── */
-    mkSec(inner,'選取文字格式化','14px');
-    var fmtHint=document.createElement('div');fmtHint.style.cssText='font-size:9px;color:var(--text3);margin-bottom:8px;line-height:1.7';fmtHint.textContent='先在右側預覽中選取文字，再點擊格式按鈕。';inner.appendChild(fmtHint);
+    mkSec(b,'選取文字格式化','14px');
+    var fmtHint=document.createElement('div');fmtHint.style.cssText='font-size:10px;color:var(--text3);margin-bottom:8px;line-height:1.7';fmtHint.textContent='先在右側預覽中選取文字，再點擊格式按鈕。';b.appendChild(fmtHint);
     var toolbar=document.createElement('div');toolbar.style.cssText='display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px';
     function fmtBtn(lbl,title,sty,fn){
-      var btn=document.createElement('button');btn.className='nav-btn';btn.style.cssText='font-size:10px;padding:5px 8px;'+sty;btn.title=title;btn.textContent=lbl;
+      var btn=document.createElement('button');btn.className='nav-btn';btn.style.cssText='font-size:11px;padding:5px 8px;'+sty;btn.title=title;btn.textContent=lbl;
       btn.onclick=function(){applySelFormat(fn);};toolbar.appendChild(btn);
     }
     fmtBtn('B','粗體','font-weight:700',function(s){s.fontWeight=s.fontWeight==='700'?'':'700';});
@@ -1865,20 +1869,17 @@ function renderWE(){
     fmtBtn('U','底線','text-decoration:underline',function(s){s.textDecoration=s.textDecoration==='underline'?'':'underline';});
     fmtBtn('S̶','刪除線','',function(s){s.textDecoration=s.textDecoration==='line-through'?'':'line-through';});
     fmtBtn('AA','全大寫','',function(s){s.textTransform=s.textTransform==='uppercase'?'':'uppercase';});
-    fmtBtn('A+','放大','',function(s){var c=parseFloat(s.fontSize)||13;s.fontSize=(c+1)+'px';});
-    fmtBtn('A-','縮小','',function(s){var c=parseFloat(s.fontSize)||13;if(c>8)s.fontSize=(c-1)+'px';});
+    fmtBtn('A+','放大','',function(s){var c=parseFloat(s.fontSize)||14;s.fontSize=(c+1)+'px';});
+    fmtBtn('A-','縮小','',function(s){var c=parseFloat(s.fontSize)||14;if(c>8)s.fontSize=(c-1)+'px';});
     fmtBtn('×','清除格式','color:var(--danger)',function(s){s.fontWeight='';s.fontStyle='';s.textDecoration='';s.textTransform='';s.fontSize='';s.color='';});
-    inner.appendChild(toolbar);
-
+    b.appendChild(toolbar);
     /* colour row */
     var cpRow=document.createElement('div');cpRow.style.cssText='display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap';
     var cpLbl=document.createElement('div');cpLbl.className='ed-label';cpLbl.style.cssText='margin:0;min-width:52px';cpLbl.textContent='文字顏色';
     var cpInp=document.createElement('input');cpInp.type='color';cpInp.value='#D4AA60';cpInp.style.cssText='width:28px;height:24px;border:none;background:none;cursor:pointer;padding:0;flex-shrink:0';
-    var cpBtn=document.createElement('button');cpBtn.className='nav-btn';cpBtn.style.cssText='font-size:9px';cpBtn.textContent='套用';cpBtn.onclick=function(){applySelFormat(function(s){s.color=cpInp.value;});};
-    var cpClr=document.createElement('button');cpClr.className='nav-btn';cpClr.style.cssText='font-size:9px';cpClr.textContent='清除';cpClr.onclick=function(){applySelFormat(function(s){s.color='';});};
-    cpRow.appendChild(cpLbl);cpRow.appendChild(cpInp);cpRow.appendChild(cpBtn);cpRow.appendChild(cpClr);inner.appendChild(cpRow);
-
-    /* swatches */
+    var cpBtn=document.createElement('button');cpBtn.className='nav-btn';cpBtn.style.cssText='font-size:10px';cpBtn.textContent='套用';cpBtn.onclick=function(){applySelFormat(function(s){s.color=cpInp.value;});};
+    var cpClr=document.createElement('button');cpClr.className='nav-btn';cpClr.style.cssText='font-size:10px';cpClr.textContent='清除';cpClr.onclick=function(){applySelFormat(function(s){s.color='';});};
+    cpRow.appendChild(cpLbl);cpRow.appendChild(cpInp);cpRow.appendChild(cpBtn);cpRow.appendChild(cpClr);b.appendChild(cpRow);
     var swRow=document.createElement('div');swRow.style.cssText='display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px';
     ['#F0EDE8','#A8A49C','#686460','#D4AA60','#B89858','#8B7040','#C0A0A0','#88A090','#7090A0','#A09070'].forEach(function(c){
       var sw=document.createElement('div');sw.style.cssText='width:18px;height:18px;border-radius:50%;background:'+c+';cursor:pointer;border:1.5px solid transparent;flex-shrink:0';
@@ -1886,37 +1887,53 @@ function renderWE(){
       sw.onmouseover=function(){this.style.borderColor='#fff';};sw.onmouseout=function(){this.style.borderColor='transparent';};
       swRow.appendChild(sw);
     });
-    inner.appendChild(swRow);
+    b.appendChild(swRow);
 
-    /* ── confirm / cancel buttons ── */
-    var btnRow=document.createElement('div');btnRow.id='font-btn-row';btnRow.style.cssText='display:flex;gap:8px;margin-top:14px;padding-top:12px;border-top:.5px solid var(--line)';
-    var confirmBtn=document.createElement('button');confirmBtn.className='nav-btn-fill';confirmBtn.style.cssText='flex:1;font-size:9px;letter-spacing:1px;opacity:.4;pointer-events:none';confirmBtn.id='font-confirm-btn';confirmBtn.textContent='✓ 確認套用';
+    /* ── 確認 / 取消 / 重設 ── */
+    var btnRow=document.createElement('div');
+    btnRow.style.cssText='display:flex;gap:8px;margin-top:16px;padding-top:12px;border-top:.5px solid var(--line)';
+    var confirmBtn=document.createElement('button');
+    confirmBtn.className='nav-btn-fill';
+    confirmBtn.style.cssText='flex:1;font-size:10px;letter-spacing:1px';
+    confirmBtn.textContent='✓ 確認儲存';
     confirmBtn.onclick=function(){
-      Object.assign(SC.fonts,pending);
-      applyFonts();rp();dirty=false;
-      confirmBtn.style.opacity='.4';confirmBtn.style.pointerEvents='none';
-      cancelBtn.style.opacity='.4';cancelBtn.style.pointerEvents='none';
+      Object.assign(SC.fonts, pending);
+      applyFonts();
+      rp();
+      dirty=false;
+      updateBtns();
       toast('字體設定已儲存');
     };
-    var cancelBtn=document.createElement('button');cancelBtn.className='nav-btn';cancelBtn.style.cssText='flex:1;font-size:9px;letter-spacing:1px;opacity:.4;pointer-events:none';cancelBtn.id='font-cancel-btn';cancelBtn.textContent='↺ 取消預覽';
+    var cancelBtn=document.createElement('button');
+    cancelBtn.className='nav-btn';
+    cancelBtn.style.cssText='flex:1;font-size:10px;letter-spacing:1px';
+    cancelBtn.textContent='↺ 取消';
     cancelBtn.onclick=function(){
       pending=JSON.parse(JSON.stringify(SC.fonts||{}));
-      applyFonts();rp();dirty=false;
-      confirmBtn.style.opacity='.4';confirmBtn.style.pointerEvents='none';
-      cancelBtn.style.opacity='.4';cancelBtn.style.pointerEvents='none';
+      applyFonts();
+      rp();
+      dirty=false;
+      updateBtns();
       toast('已還原');
     };
-    var resetBtn=document.createElement('button');resetBtn.className='nav-btn';resetBtn.style.cssText='font-size:9px;color:var(--text3)';resetBtn.textContent='重設';
+    var resetBtn=document.createElement('button');
+    resetBtn.className='nav-btn';
+    resetBtn.style.cssText='font-size:10px;color:var(--text3)';
+    resetBtn.textContent='重設';
     resetBtn.onclick=function(){
-      pending={heading:'Georgia, serif',body:'Helvetica Neue, Arial, sans-serif',bodySize:'13px',letterSpacing:'normal',headingWeight:'300',headingStyle:'normal',headingDecoration:'none',headingTransform:'none',bodyWeight:'400',bodyStyle:'normal',bodyDecoration:'none',bodyTransform:'none'};
-      dirty=true;previewFonts();updateBtns();
+      pending={heading:'Georgia, serif',body:'Helvetica Neue, Arial, sans-serif',bodySize:'13px',letterSpacing:'normal',headingWeight:'300',headingStyle:'normal',headingDecoration:'none',headingTransform:'none',headingSize:'',bodyWeight:'400',bodyStyle:'normal',bodyDecoration:'none',bodyTransform:'none'};
+      dirty=true;applyFontsPending();updateBtns();
     };
-    btnRow.appendChild(confirmBtn);btnRow.appendChild(cancelBtn);btnRow.appendChild(resetBtn);b.appendChild(btnRow);
+    btnRow.appendChild(confirmBtn);btnRow.appendChild(cancelBtn);btnRow.appendChild(resetBtn);
+    b.appendChild(btnRow);
 
     function updateBtns(){
-      confirmBtn.style.opacity=dirty?'1':'.4';confirmBtn.style.pointerEvents=dirty?'all':'none';
-      cancelBtn.style.opacity=dirty?'1':'.4';cancelBtn.style.pointerEvents=dirty?'all':'none';
+      confirmBtn.style.opacity=dirty?'1':'.4';
+      confirmBtn.style.pointerEvents=dirty?'all':'none';
+      cancelBtn.style.opacity=dirty?'1':'.4';
+      cancelBtn.style.pointerEvents=dirty?'all':'none';
     }
+    updateBtns();
   });
   ag('行動呼籲',function(b){
     fld(b,'標題（\\n = 換行）',function(){return SC.cta.title;},function(v){SC.cta.title=v;},true);
