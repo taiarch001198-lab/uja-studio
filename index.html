@@ -2325,12 +2325,20 @@ function renderSettings(){
 function svsettings(){var np=document.getElementById('sp').value;if(np)CP=np;CU=document.getElementById('su').value||CU;toast('已儲存');}
 
 // DOWNLOAD HTML
-var GH_TOKEN='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';
 var GH_REPO='taiarch001198-lab/uja-studio';
 var GH_FILE='index.html';
 var GH_BRANCH='main';
 
 function publishToGitHub(){
+  /* 取得 token */
+  var tok=localStorage.getItem('uja_gh_token')||'';
+  if(!tok){
+    tok=prompt('請輸入 GitHub Personal Access Token：\n（到 github.com/settings/tokens 產生，勾選 repo 權限）');
+    if(!tok||!tok.trim()){toast('已取消');return;}
+    tok=tok.trim();
+    localStorage.setItem('uja_gh_token',tok);
+  }
+
   toast('準備發布…');
   var data={
     SC:SC,pinnedPorts:pinnedPorts||[],
@@ -2341,42 +2349,72 @@ function publishToGitHub(){
     PROJECTS:PROJECTS||[],TEAM_MEMBERS:TEAM_MEMBERS||[],
     FINANCE:FINANCE||{monthly:[],pending:0,note:''}
   };
+
   try{
     var src=document.documentElement.outerHTML;
     src=src.replace(/<script id="uja-data">[\s\S]*?<\/script>/g,'');
-    var scriptOpen='<scr'+'ipt id="uja-data">';
-    var scriptClose='<\/sc'+'ript>';
-    var rs=scriptOpen+'\n(function(){\nvar d='+JSON.stringify(data)+';\n'
+    var rs='<scr'+'ipt id="uja-data">\n(function(){\nvar d='+JSON.stringify(data)+';\n'
       +'document.addEventListener("DOMContentLoaded",function(){\n'
       +'try{Object.assign(SC,d.SC);PORTFOLIO=d.PORTFOLIO;PROJECTS=d.PROJECTS;\n'
       +'TEAM_MEMBERS=d.TEAM_MEMBERS;SC.team=d.TEAM_MEMBERS.map(function(m){return{name:m.name,role:m.role,color:m.color,init:m.init};});\n'
       +'FINANCE=d.FINANCE;if(d.pinnedPorts)pinnedPorts=d.pinnedPorts;\n'
       +'if(SC.accent)document.documentElement.style.setProperty("--accent",SC.accent);\n'
-      +'}catch(e){}\n});\n})();\n'+scriptClose;
+      +'}catch(e){}\n});\n})();\n'+'<\/scr'+'ipt>';
     src=src.replace('</body>',rs+'\n</body>');
+
+    var repo='taiarch001198-lab/uja-studio';
+    var file='index.html';
+    var branch='main';
+    var apiBase='https://api.github.com/repos/'+repo+'/contents/'+file;
+    var headers={
+      'Authorization':'token '+tok,
+      'Accept':'application/vnd.github.v3+json',
+      'Content-Type':'application/json'
+    };
+
     toast('連接 GitHub…');
-    fetch('https://api.github.com/repos/'+GH_REPO+'/contents/'+GH_FILE+'?ref='+GH_BRANCH,{
-      headers:{'Authorization':'token '+GH_TOKEN,'Accept':'application/vnd.github.v3+json'}
+    fetch(apiBase+'?ref='+branch,{headers:headers})
+    .then(function(r){
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      return r.json();
     })
-    .then(function(r){return r.json();})
     .then(function(info){
-      var sha=info.sha;
-      var encoded=btoa(unescape(encodeURIComponent(src)));
+      if(!info.sha)throw new Error('無法取得檔案 SHA：'+JSON.stringify(info));
       toast('上傳中，請稍候…');
-      return fetch('https://api.github.com/repos/'+GH_REPO+'/contents/'+GH_FILE,{
+      var encoded=btoa(unescape(encodeURIComponent(src)));
+      return fetch(apiBase,{
         method:'PUT',
-        headers:{'Authorization':'token '+GH_TOKEN,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
-        body:JSON.stringify({message:'Update via admin panel',content:encoded,sha:sha,branch:GH_BRANCH})
+        headers:headers,
+        body:JSON.stringify({
+          message:'Update via UJA Studio admin',
+          content:encoded,
+          sha:info.sha,
+          branch:branch
+        })
       });
     })
     .then(function(r){return r.json();})
     .then(function(res){
-      if(res.commit){toast('✓ 發布成功！網站約 1 分鐘後更新');}
-      else{toast('發布失敗：'+(res.message||JSON.stringify(res)));}
+      if(res.commit){
+        toast('✓ 發布成功！約 1 分鐘後網站更新');
+      } else if(res.message==='Bad credentials'){
+        localStorage.removeItem('uja_gh_token');
+        toast('Token 無效，請重新輸入');
+      } else {
+        toast('發布失敗：'+(res.message||'未知錯誤'));
+        console.error('publish error',res);
+      }
     })
-    .catch(function(e){toast('發布失敗：'+e.message);});
-  }catch(e){toast('發布失敗：'+e.message);}
+    .catch(function(e){
+      toast('發布失敗：'+e.message);
+      console.error('publish catch',e);
+    });
+  }catch(e){
+    toast('發布失敗：'+e.message);
+    console.error('publish try catch',e);
+  }
 }
+
 
 function downloadHTML(){
   try{
