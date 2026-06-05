@@ -2352,7 +2352,7 @@ function publishToGitHub(){
 
   try{
     var src=document.documentElement.outerHTML;
-    src=src.replace(/<script id="uja-data">[\s\S]*?<\/script>/g,'');
+    src=src.replace(/<scr\x69pt id="uja-data">[\s\S]*?<\/script>/g,'');
     var rs='<scr'+'ipt id="uja-data">\n(function(){\nvar d='+JSON.stringify(data)+';\n'
       +'document.addEventListener("DOMContentLoaded",function(){\n'
       +'try{Object.assign(SC,d.SC);PORTFOLIO=d.PORTFOLIO;PROJECTS=d.PROJECTS;\n'
@@ -2416,42 +2416,7 @@ function publishToGitHub(){
 }
 
 
-function downloadHTML(){
-  try{
-    toast('準備下載…');
-    var data={
-      SC:SC,
-      pinnedPorts:pinnedPorts||[],
-      PORTFOLIO:PORTFOLIO.map(function(p){
-        return{id:p.id,name:p.name,cat:p.cat,catName:p.catName,
-               area:p.area,year:p.year,color:p.color||'#888',desc:p.desc||'',imgs:p.imgs||[]};
-      }),
-      PROJECTS:PROJECTS||[],
-      TEAM_MEMBERS:TEAM_MEMBERS||[],
-      FINANCE:FINANCE||{monthly:[],pending:0,note:''}
-    };
-    var src=document.documentElement.outerHTML;
-    src=src.replace(/<script id="uja-data">[\s\S]*?<\/script>/g,'');
-    var rs='<script id="uja-data">\n(function(){\nvar d='+JSON.stringify(data)+';\n'
-      +'document.addEventListener("DOMContentLoaded",function(){\n'
-      +'try{Object.assign(SC,d.SC);PORTFOLIO=d.PORTFOLIO;PROJECTS=d.PROJECTS;\n'
-      +'TEAM_MEMBERS=d.TEAM_MEMBERS;SC.team=d.TEAM_MEMBERS.map(function(m){return{name:m.name,role:m.role,color:m.color,init:m.init};});\n'
-      +'FINANCE=d.FINANCE;if(d.pinnedPorts)pinnedPorts=d.pinnedPorts;\n'
-      +'if(SC.accent)document.documentElement.style.setProperty("--accent",SC.accent);\n'
-      +'}catch(e){}\n});\n})();\n<\/script>';
-    src=src.replace('</body>',rs+'\n</body>');
-    var blob=new Blob([src],{type:'text/html;charset=utf-8'});
-    var a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download='index.html';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(a.href);},500);
-    toast('index.html 已下載 ✓');
-  }catch(e){
-    toast('下載失敗：'+e.message);
-  }
-}
+
 
 
 function renderWE(){
@@ -3186,114 +3151,13 @@ function renderSettings(){
 function svsettings(){var np=document.getElementById('sp').value;if(np)CP=np;CU=document.getElementById('su').value||CU;toast('已儲存');}
 
 // DOWNLOAD HTML
-function compressBase64Img(b64,maxW,quality,cb){
-  try{
-    var img=new Image();
-    img.onload=function(){
-      try{
-        var w=Math.min(img.width,maxW);
-        var h=Math.round(img.height*(w/img.width));
-        var canvas=document.createElement('canvas');
-        canvas.width=w;canvas.height=h;
-        var ctx=canvas.getContext('2d');
-        ctx.drawImage(img,0,0,w,h);
-        cb(canvas.toDataURL('image/jpeg',quality));
-      }catch(e){cb(b64);}
-    };
-    img.onerror=function(){cb(b64);};
-    img.src=b64;
-  }catch(e){cb(b64);}
-}
 
-function compressAllImgs(data,cb){
-  try{
-    var str=JSON.stringify(data);
-    var matches=[],m;
-    var re2=/"data:image\/[^;]+;base64,[^"]{2000,}"/g;
-    while((m=re2.exec(str))!==null){
-      if(matches.indexOf(m[0])<0) matches.push(m[0]);
-    }
-    if(!matches.length){cb(data);return;}
-    var done=0,map={};
-    matches.forEach(function(orig){
-      compressBase64Img(orig.slice(1,-1),1200,0.70,function(compressed){
-        map[orig]='"'+compressed+'"';
-        done++;
-        if(done===matches.length){
-          try{
-            var s=str;
-            Object.keys(map).forEach(function(k){
-              /* 用 split/join 取代，避免 replace 的 $ 問題 */
-              s=s.split(k).join(map[k]);
-            });
-            cb(JSON.parse(s));
-          }catch(e){
-            console.error('compress parse error',e);
-            cb(data);
-          }
-        }
-      });
-    });
-  }catch(e){
-    console.error('compressAllImgs error',e);
-    cb(data);
-  }
-}
 
-function buildHTMLString(data){
-  var src=document.documentElement.outerHTML;
-  src=src.replace(/<script id="uja-data">[\s\S]*?<\/script>/g,'');
-  var rs='<script id="uja-data">\n(function(){\nvar d='+JSON.stringify(data)+';\n'
-    +'document.addEventListener("DOMContentLoaded",function(){\n'
-    +'try{\n'
-    +'Object.assign(SC,d.SC);\n'
-    +'PORTFOLIO=d.PORTFOLIO;\n'
-    +'PROJECTS=d.PROJECTS;\n'
-    +'TEAM_MEMBERS=d.TEAM_MEMBERS;\n'
-    +'SC.team=d.TEAM_MEMBERS.map(function(m){return{name:m.name,role:m.role,color:m.color,init:m.init};});\n'
-    +'FINANCE=d.FINANCE;\n'
-    +'if(d.pinnedPorts)pinnedPorts=d.pinnedPorts;\n'
-    +'if(SC.accent)document.documentElement.style.setProperty("--accent",SC.accent);\n'
-    +'}catch(e){console.error("restore",e);}\n'
-    +'});\n'
-    +'})();\n'
-    +'<\/script>';
-  src=src.replace('</body>',rs+'\n</body>');
-  return src;
-}
 
-function downloadHTML(){
-  var rawData={
-    SC:SC,
-    pinnedPorts:pinnedPorts||[],
-    PORTFOLIO:PORTFOLIO.map(function(p){
-      return{id:p.id,name:p.name,cat:p.cat,catName:p.catName,
-             area:p.area,year:p.year,color:p.color||'#888',desc:p.desc||'',imgs:p.imgs||[]};
-    }),
-    PROJECTS:PROJECTS||[],
-    TEAM_MEMBERS:TEAM_MEMBERS||[],
-    FINANCE:FINANCE||{monthly:[],pending:0,note:''}
-  };
 
-  /* 檢查是否有 base64 圖片需要壓縮 */
-  var hasB64=JSON.stringify(rawData).indexOf('data:image')>=0;
 
-  if(!hasB64){
-    /* 無圖片，直接下載 */
-    doDownload(rawData);
-  } else {
-    toast('壓縮照片中…');
-    /* 設定 timeout 保險：超過 15 秒直接下載未壓縮版本 */
-    var timeout=setTimeout(function(){
-      toast('壓縮超時，直接下載…');
-      doDownload(rawData);
-    },15000);
-    compressAllImgs(rawData,function(compressed){
-      clearTimeout(timeout);
-      doDownload(compressed);
-    });
-  }
-}
+
+
 
 function doDownload(data){
   try{
@@ -4048,48 +3912,18 @@ function renderSettings(){
 function svsettings(){var np=document.getElementById('sp').value;if(np)CP=np;CU=document.getElementById('su').value||CU;toast('已儲存');}
 
 // DOWNLOAD HTML
-function compressBase64Img(b64,maxW,quality,cb){
-  var img=new Image();
-  img.onload=function(){
-    var w=Math.min(img.width,maxW);
-    var h=Math.round(img.height*(w/img.width));
-    var canvas=document.createElement('canvas');
-    canvas.width=w;canvas.height=h;
-    var ctx=canvas.getContext('2d');
-    ctx.drawImage(img,0,0,w,h);
-    cb(canvas.toDataURL('image/jpeg',quality));
-  };
-  img.onerror=function(){cb(b64);};
-  img.src=b64;
-}
 
-function compressAllImgs(data,cb){
-  var str=JSON.stringify(data);
-  var re2=/"data:image\/[^;]+;base64,[^"]{500,}"/g;
-  var matches=[],m;
-  while((m=re2.exec(str))!==null){if(matches.indexOf(m[0])<0)matches.push(m[0]);}
-  if(!matches.length){cb(data);return;}
-  var done=0,map={};
-  matches.forEach(function(orig){
-    compressBase64Img(orig.slice(1,-1),1200,0.72,function(compressed){
-      map[orig]='"'+compressed+'"';
-      if(++done===matches.length){
-        var s=str;
-        Object.keys(map).forEach(function(k){s=s.split(k).join(map[k]);});
-        try{cb(JSON.parse(s));}catch(e){cb(data);}
-      }
-    });
-  });
-}
+
+
 
 function buildHTMLString(data){
   /* 用目前頁面的 outerHTML 做基礎，替換 uja-data script */
   var src=document.documentElement.outerHTML;
   /* 移除舊的 restore script */
-  src=src.replace(/<script id="uja-data">[\s\S]*?<\/script>/g,'');
+  src=src.replace(/<scr\x69pt id="uja-data">[\s\S]*?<\/script>/g,'');
   /* 移除目前登入狀態（確保下載的是乾淨版本）*/
   /* 注入新資料 */
-  var rs='<script id="uja-data">\n(function(){\nvar d='+JSON.stringify(data)+';\n'
+  var rs='<scr'+'ipt id="uja-data">\n(function(){\nvar d='+JSON.stringify(data)+';\n'
     +'document.addEventListener("DOMContentLoaded",function(){\n'
     +'try{\n'
     +'Object.assign(SC,d.SC);\n'
@@ -4112,35 +3946,7 @@ function buildHTMLString(data){
   return src;
 }
 
-function downloadHTML(){
-  toast('壓縮照片中，請稍候…');
-  var rawData={
-    SC:SC,
-    pinnedPorts:pinnedPorts,
-    PORTFOLIO:PORTFOLIO.map(function(p){
-      return{id:p.id,name:p.name,cat:p.cat,catName:p.catName,
-             area:p.area,year:p.year,color:p.color||'#888',desc:p.desc||'',imgs:p.imgs};
-    }),
-    PROJECTS:PROJECTS,
-    TEAM_MEMBERS:TEAM_MEMBERS,
-    FINANCE:FINANCE
-  };
-  compressAllImgs(rawData,function(data){
-    try{
-      var src=buildHTMLString(data);
-      var blob=new Blob([src],{type:'text/html;charset=utf-8'});
-      var a=document.createElement('a');
-      a.href=URL.createObjectURL(blob);
-      a.download='index.html';
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(a.href);},100);
-      toast('index.html 已下載');
-    }catch(e){
-      toast('下載失敗：'+e.message);
-    }
-  });
-}
+
 
 
 function renderWE(){
@@ -4928,8 +4734,8 @@ function downloadHTML(){
     xhr.onload=function(){
       if(xhr.status!==200){toast('下載失敗，請重試');return;}
       var src=xhr.responseText;
-      src=src.replace(/<script id="uja-data">[\s\S]*?<\/script>/g,'');
-      var rs='<script id="uja-data">\n(function(){\nvar d='+JSON.stringify(data)+';\ndocument.addEventListener("DOMContentLoaded",function(){\ntry{Object.assign(SC,d.SC);PORTFOLIO=d.PORTFOLIO;PROJECTS=d.PROJECTS;TEAM_MEMBERS=d.TEAM_MEMBERS;SC.team=d.TEAM_MEMBERS.map(function(m){return{name:m.name,role:m.role,color:m.color,init:m.init};});FINANCE=d.FINANCE;if(d.pinnedPorts)pinnedPorts=d.pinnedPorts;if(SC.accent)document.documentElement.style.setProperty("--accent",SC.accent);}catch(e){}\n});\n})();\n<\/script>';
+      src=src.replace(/<scr\x69pt id="uja-data">[\s\S]*?<\/script>/g,'');
+      var rs='<scr'+'ipt id="uja-data">\n(function(){\nvar d='+JSON.stringify(data)+';\ndocument.addEventListener("DOMContentLoaded",function(){\ntry{Object.assign(SC,d.SC);PORTFOLIO=d.PORTFOLIO;PROJECTS=d.PROJECTS;TEAM_MEMBERS=d.TEAM_MEMBERS;SC.team=d.TEAM_MEMBERS.map(function(m){return{name:m.name,role:m.role,color:m.color,init:m.init};});FINANCE=d.FINANCE;if(d.pinnedPorts)pinnedPorts=d.pinnedPorts;if(SC.accent)document.documentElement.style.setProperty("--accent",SC.accent);}catch(e){}\n});\n})();\n<\/script>';
       src=src.replace('</body>',rs+'\n</body>');
       var blob=new Blob([src],{type:'text/html;charset=utf-8'});
       var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='index.html';a.click();URL.revokeObjectURL(a.href);
