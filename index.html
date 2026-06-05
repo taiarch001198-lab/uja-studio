@@ -2306,6 +2306,11 @@ function renderSettings(){
   h+='<div style="font-size:10px;letter-spacing:2px;color:var(--accent);text-transform:uppercase;margin-bottom:10px">發布網站</div>';
   h+='<div style="font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:16px">編輯完成後點下方按鈕，直接發布到 GitHub，約 1 分鐘後網站自動更新。</div>';
   h+='<button onclick="publishToGitHub()" style="width:100%;background:var(--accent);color:#0A0A0A;border:none;padding:16px;font-size:14px;cursor:pointer;font-family:var(--sans);letter-spacing:1px;font-weight:500">🚀 一鍵發布到 GitHub</button>';
+  var hasT=localStorage.getItem('uja_gh_token');
+  h+='<div style="margin-top:10px;display:flex;gap:8px;align-items:center">';
+  h+='<div style="font-size:11px;color:var(--text3);flex:1">Token：'+(hasT?'<span style="color:#2ea44f">✓ 已設定</span>':'<span style="color:var(--danger)">未設定</span>')+'</div>';
+  h+='<button onclick="localStorage.removeItem(\'uja_gh_token\');renderSettings()" class="nav-btn" style="font-size:9px">清除</button>';
+  h+='</div>';
   h+='</div>';
 
   /* 手動下載 */
