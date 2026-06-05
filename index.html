@@ -2234,22 +2234,69 @@ function renderSettings(){
 function svsettings(){var np=document.getElementById('sp').value;if(np)CP=np;CU=document.getElementById('su').value||CU;toast('已儲存');}
 
 // DOWNLOAD HTML
-function downloadHTML(){
-  var xhr=new XMLHttpRequest();
-  xhr.open('GET',window.location.href,true);
-  xhr.onload=function(){
-    if(xhr.status!==200){toast('下載失敗，請重試');return;}
-    var src=xhr.responseText;
-    src=src.replace(/<script id="uja-data">[\s\S]*?<\/script>/g,'');
-    var data={SC:SC,pinnedPorts:pinnedPorts,PORTFOLIO:PORTFOLIO.map(function(p){return{id:p.id,name:p.name,cat:p.cat,catName:p.catName,area:p.area,year:p.year,color:p.color||'#888',desc:p.desc||'',imgs:p.imgs};}),PROJECTS:PROJECTS,TEAM_MEMBERS:TEAM_MEMBERS,FINANCE:FINANCE};
-    var rs='<script id="uja-data">\n(function(){\nvar d='+JSON.stringify(data)+';\ndocument.addEventListener("DOMContentLoaded",function(){\ntry{Object.assign(SC,d.SC);PORTFOLIO=d.PORTFOLIO;if(d.pinnedPorts)pinnedPorts=d.pinnedPorts;PROJECTS=d.PROJECTS;TEAM_MEMBERS=d.TEAM_MEMBERS;SC.team=d.TEAM_MEMBERS.map(function(m){return{name:m.name,role:m.role,color:m.color,init:m.init};});FINANCE=d.FINANCE;if(SC.accent)document.documentElement.style.setProperty("--accent",SC.accent);}catch(e){}\n});\n})();\n<\/script>';
-    src=src.replace('</body>',rs+'\n</body>');
-    var blob=new Blob([src],{type:'text/html;charset=utf-8'});
-    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='index.html';a.click();URL.revokeObjectURL(a.href);
-    toast('index.html 已下載');
+function compressBase64Img(b64,maxW,quality,cb){
+  /* 壓縮 base64 圖片到指定寬度和品質 */
+  var img=new Image();
+  img.onload=function(){
+    var w=Math.min(img.width,maxW);
+    var h=Math.round(img.height*(w/img.width));
+    var canvas=document.createElement('canvas');
+    canvas.width=w;canvas.height=h;
+    var ctx=canvas.getContext('2d');
+    ctx.drawImage(img,0,0,w,h);
+    cb(canvas.toDataURL('image/jpeg',quality));
   };
-  xhr.onerror=function(){toast('下載失敗，請重試');};
-  xhr.send();
+  img.src=b64;
+}
+
+function compressAllImgs(data,cb){
+  /* 找出所有 base64 圖片，壓縮後回呼 */
+  var str=JSON.stringify(data);
+  var matches=[];
+  var re=/"data:image\/[^;]+;base64,[^"]{1000,}"/g;
+  var m;
+  while((m=re.exec(str))!==null){
+    if(matches.indexOf(m[0])<0) matches.push(m[0]);
+  }
+  if(!matches.length){cb(data);return;}
+  var done=0;
+  var map={};
+  matches.forEach(function(orig){
+    var b64=orig.slice(1,-1); /* remove quotes */
+    compressBase64Img(b64,1200,0.72,function(compressed){
+      map[orig]='"'+compressed+'"';
+      done++;
+      if(done===matches.length){
+        var newStr=str;
+        Object.keys(map).forEach(function(k){newStr=newStr.split(k).join(map[k]);});
+        cb(JSON.parse(newStr));
+      }
+    });
+  });
+}
+
+function downloadHTML(){
+  toast('壓縮照片中，請稍候…');
+  var rawData={SC:SC,pinnedPorts:pinnedPorts,
+    PORTFOLIO:PORTFOLIO.map(function(p){return{id:p.id,name:p.name,cat:p.cat,catName:p.catName,area:p.area,year:p.year,color:p.color||'#888',desc:p.desc||'',imgs:p.imgs};}),
+    PROJECTS:PROJECTS,TEAM_MEMBERS:TEAM_MEMBERS,FINANCE:FINANCE};
+
+  compressAllImgs(rawData,function(data){
+    var xhr=new XMLHttpRequest();
+    xhr.open('GET',window.location.href,true);
+    xhr.onload=function(){
+      if(xhr.status!==200){toast('下載失敗，請重試');return;}
+      var src=xhr.responseText;
+      src=src.replace(/<script id="uja-data">[\s\S]*?<\/script>/g,'');
+      var rs='<script id="uja-data">\n(function(){\nvar d='+JSON.stringify(data)+';\ndocument.addEventListener("DOMContentLoaded",function(){\ntry{Object.assign(SC,d.SC);PORTFOLIO=d.PORTFOLIO;PROJECTS=d.PROJECTS;TEAM_MEMBERS=d.TEAM_MEMBERS;SC.team=d.TEAM_MEMBERS.map(function(m){return{name:m.name,role:m.role,color:m.color,init:m.init};});FINANCE=d.FINANCE;if(d.pinnedPorts)pinnedPorts=d.pinnedPorts;if(SC.accent)document.documentElement.style.setProperty("--accent",SC.accent);}catch(e){}\n});\n})();\n<\/script>';
+      src=src.replace('</body>',rs+'\n</body>');
+      var blob=new Blob([src],{type:'text/html;charset=utf-8'});
+      var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='index.html';a.click();URL.revokeObjectURL(a.href);
+      toast('index.html 已下載');
+    };
+    xhr.onerror=function(){toast('下載失敗，請重試');};
+    xhr.send();
+  });
 }
 
 // INIT
