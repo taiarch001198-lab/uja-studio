@@ -1603,6 +1603,33 @@ function renderWE(){
   ag('輪播照片',function(b){
     /* upload */
     var upLbl=document.createElement('div');upLbl.className='ed-label';upLbl.style.marginBottom='6px';upLbl.textContent='上傳照片（可多張，依序輪播）';b.appendChild(upLbl);
+    /* 網址輸入欄 */
+    var urlRow=document.createElement('div');
+    urlRow.style.cssText='display:flex;gap:8px;margin-bottom:10px';
+    var ssUrlInp=document.createElement('input');
+    ssUrlInp.id='ss-url-inp';
+    ssUrlInp.className='modal-inp';
+    ssUrlInp.type='text';
+    ssUrlInp.placeholder='貼上圖片網址（https://raw.githubusercontent.com/...）';
+    ssUrlInp.style.cssText='flex:1;font-size:12px';
+    var ssUrlBtn=document.createElement('button');
+    ssUrlBtn.className='nav-btn-fill';
+    ssUrlBtn.style.cssText='font-size:10px;white-space:nowrap;padding:8px 14px;flex-shrink:0';
+    ssUrlBtn.textContent='+ 加入';
+    ssUrlBtn.onclick=function(){
+      var url=ssUrlInp.value.trim();
+      if(!url||!url.startsWith('http')){toast('請輸入有效的圖片網址');return;}
+      if(!SC.slideshow)SC.slideshow={imgs:[],interval:5000,overlay:0.55};
+      SC.slideshow.imgs.push(url);
+      ssUrlInp.value='';
+      ssBuildThumbs(thumbCt);
+      ssInit();
+      toast('照片已加入 ✓');
+    };
+    ssUrlInp.onkeydown=function(e){if(e.key==='Enter')ssUrlBtn.onclick();};
+    urlRow.appendChild(ssUrlInp);urlRow.appendChild(ssUrlBtn);
+    b.appendChild(urlRow);
+
     var dz=document.createElement('div');dz.className='drop-zone';
     dz.innerHTML='<div style="font-size:9px;letter-spacing:2px;color:var(--text3);text-transform:uppercase">點擊或拖曳上傳</div><div style="font-size:9px;color:var(--text3);margin-top:5px">JPG · PNG · WEBP</div>';
     var fi=document.createElement('input');fi.type='file';fi.accept='image/*';fi.multiple=true;fi.style.display='none';
@@ -2055,10 +2082,7 @@ function renderPortEdit(id){
   h+='<div class="modal-grid" style="margin-bottom:14px">'+mf2('坪數','pe-a',p.area)+mf2('年份','pe-y',p.year)+'</div>';
   h+='<div style="margin-bottom:14px"><div class="ed-label" style="margin-bottom:6px">Description</div><textarea class="modal-inp" id="pe-d" rows="3" style="resize:none">'+p.desc+'</textarea></div>';
   h+='<div class="ed-label" style="margin-bottom:8px">作品照片（'+p.imgs.length+'）</div>';
-  h+='<div style="display:flex;gap:8px;margin-bottom:8px">';
-  h+='<input id="img-url-inp" class="modal-inp" placeholder="貼上圖片網址 https://..." style="flex:1;font-size:11px">';
-  h+='<button class="nav-btn-fill" style="font-size:9px;white-space:nowrap;padding:8px 12px" onclick="addImgUrl()">+ 加入網址</button>';
-  h+='</div>';
+
   h+='<div class="drop-zone" id="dz" onclick="document.getElementById(\'fi-inp\').click()" ondragover="event.preventDefault();this.classList.add(\'dov\')" ondragleave="this.classList.remove(\'dov\')" ondrop="hdrop(event)">'
     +'<div style="font-size:9px;letter-spacing:2px;color:var(--text3);text-transform:uppercase">Click or drag to upload</div>'
     +'<div style="font-size:9px;color:var(--text3);margin-top:6px">JPG · PNG · WEBP · Multiple files OK</div></div>';
@@ -2069,6 +2093,33 @@ function renderPortEdit(id){
   h+='<div style="display:flex;gap:10px;margin-top:20px"><button class="nav-btn-fill" style="font-size:9px" onclick="savePort()">儲存</button><button class="nav-btn" style="font-size:9px" onclick="editingPortId=null;renderPortAdmin()">取消</button></div>';
   h+='</div>';
   document.getElementById('mainarea').innerHTML=h;
+
+  /* 用 DOM 建立網址輸入欄，確保可以正常貼上 */
+  var photoLblEl=document.querySelector('#mainarea .ed-label');
+  /* 找到作品照片的 label */
+  var allLabels=document.querySelectorAll('#mainarea .ed-label');
+  var photoLabel=null;
+  allLabels.forEach(function(el){if(el.textContent.indexOf('照片')>=0||el.textContent.indexOf('Photo')>=0)photoLabel=el;});
+
+  if(photoLabel){
+    var urlWrap=document.createElement('div');
+    urlWrap.style.cssText='display:flex;gap:8px;margin-bottom:10px;margin-top:4px';
+    var urlInp=document.createElement('input');
+    urlInp.id='img-url-inp';
+    urlInp.className='modal-inp';
+    urlInp.placeholder='貼上圖片網址（https://raw.githubusercontent.com/...）';
+    urlInp.style.cssText='flex:1;font-size:12px';
+    urlInp.type='text';
+    var urlBtn=document.createElement('button');
+    urlBtn.className='nav-btn-fill';
+    urlBtn.style.cssText='font-size:10px;white-space:nowrap;padding:8px 14px;flex-shrink:0';
+    urlBtn.textContent='+ 加入';
+    urlBtn.onclick=function(){addImgUrl();};
+    urlInp.onkeydown=function(e){if(e.key==='Enter')addImgUrl();};
+    urlWrap.appendChild(urlInp);
+    urlWrap.appendChild(urlBtn);
+    photoLabel.parentNode.insertBefore(urlWrap,photoLabel.nextSibling);
+  }
 }
 function addImgUrl(){
   var inp=document.getElementById('img-url-inp');
