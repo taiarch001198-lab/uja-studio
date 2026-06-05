@@ -1603,32 +1603,22 @@ function renderWE(){
   ag('輪播照片',function(b){
     /* upload */
     var upLbl=document.createElement('div');upLbl.className='ed-label';upLbl.style.marginBottom='6px';upLbl.textContent='上傳照片（可多張，依序輪播）';b.appendChild(upLbl);
-    /* 網址輸入欄 */
-    var urlRow=document.createElement('div');
-    urlRow.style.cssText='display:flex;gap:8px;margin-bottom:10px';
-    var ssUrlInp=document.createElement('input');
-    ssUrlInp.id='ss-url-inp';
-    ssUrlInp.className='modal-inp';
-    ssUrlInp.type='text';
-    ssUrlInp.placeholder='貼上圖片網址（https://raw.githubusercontent.com/...）';
-    ssUrlInp.style.cssText='flex:1;font-size:12px';
-    var ssUrlBtn=document.createElement('button');
-    ssUrlBtn.className='nav-btn-fill';
-    ssUrlBtn.style.cssText='font-size:10px;white-space:nowrap;padding:8px 14px;flex-shrink:0';
-    ssUrlBtn.textContent='+ 加入';
-    ssUrlBtn.onclick=function(){
-      var url=ssUrlInp.value.trim();
-      if(!url||!url.startsWith('http')){toast('請輸入有效的圖片網址');return;}
+    /* prompt 按鈕 */
+    var ssPromptBtn=document.createElement('button');
+    ssPromptBtn.style.cssText='width:100%;background:var(--bg2);border:.5px solid var(--accent);color:var(--accent);padding:11px;font-size:12px;cursor:pointer;margin-bottom:8px;font-family:var(--sans);letter-spacing:1px';
+    ssPromptBtn.textContent='🔗 貼上圖片網址加入';
+    ssPromptBtn.onclick=function(){
+      var url=prompt('請貼上圖片網址：');
+      if(!url||!url.trim())return;
+      url=url.trim();
+      if(!url.startsWith('http')){alert('網址需以 http 開頭');return;}
       if(!SC.slideshow)SC.slideshow={imgs:[],interval:5000,overlay:0.55};
       SC.slideshow.imgs.push(url);
-      ssUrlInp.value='';
       ssBuildThumbs(thumbCt);
       ssInit();
       toast('照片已加入 ✓');
     };
-    ssUrlInp.onkeydown=function(e){if(e.key==='Enter')ssUrlBtn.onclick();};
-    urlRow.appendChild(ssUrlInp);urlRow.appendChild(ssUrlBtn);
-    b.appendChild(urlRow);
+    b.appendChild(ssPromptBtn);
 
     var dz=document.createElement('div');dz.className='drop-zone';
     dz.innerHTML='<div style="font-size:9px;letter-spacing:2px;color:var(--text3);text-transform:uppercase">點擊或拖曳上傳</div><div style="font-size:9px;color:var(--text3);margin-top:5px">JPG · PNG · WEBP</div>';
@@ -2082,11 +2072,7 @@ function renderPortEdit(id){
   h+='<div class="modal-grid" style="margin-bottom:14px">'+mf2('坪數','pe-a',p.area)+mf2('年份','pe-y',p.year)+'</div>';
   h+='<div style="margin-bottom:14px"><div class="ed-label" style="margin-bottom:6px">Description</div><textarea class="modal-inp" id="pe-d" rows="3" style="resize:none">'+p.desc+'</textarea></div>';
   h+='<div class="ed-label" style="margin-bottom:8px">作品照片（'+p.imgs.length+'）</div>';
-  h+='<div style="display:flex;gap:8px;margin-bottom:10px;align-items:center">';
-  h+='<input id="img-url-inp" type="url" class="modal-inp" style="flex:1;min-width:0" placeholder="Image URL https://...">';
-  h+='<button type="button" onclick="addImgUrl()" style="background:var(--accent);color:#0A0A0A;border:none;padding:10px 16px;font-size:11px;cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:var(--sans)">+ 加入網址</button>';
-  h+='</div>';
-
+  h+='<button type="button" onclick="addImgByPrompt()" style="width:100%;background:var(--bg2);border:.5px solid var(--accent);color:var(--accent);padding:11px;font-size:12px;cursor:pointer;margin-bottom:8px;font-family:var(--sans);letter-spacing:1px;text-align:center">🔗 貼上圖片網址加入</button>';
   h+='<div class="drop-zone" id="dz" onclick="document.getElementById(\'fi-inp\').click()" ondragover="event.preventDefault();this.classList.add(\'dov\')" ondragleave="this.classList.remove(\'dov\')" ondrop="hdrop(event)">'
     +'<div style="font-size:9px;letter-spacing:2px;color:var(--text3);text-transform:uppercase">Click or drag to upload</div>'
     +'<div style="font-size:9px;color:var(--text3);margin-top:6px">JPG · PNG · WEBP · Multiple files OK</div></div>';
@@ -2100,6 +2086,18 @@ function renderPortEdit(id){
 
 
 }
+function addImgByPrompt(){
+  var url=prompt('請貼上圖片網址：\n（例如：https://raw.githubusercontent.com/taiarch001198-lab/uja-studio/main/photo.jpg）');
+  if(!url||!url.trim())return;
+  url=url.trim();
+  if(!url.startsWith('http')){alert('網址需以 http 開頭');return;}
+  var p=PORTFOLIO.find(function(x){return x.id===editingPortId;});
+  if(!p)return;
+  p.imgs.push(url);
+  rimgs(p);
+  toast('照片已加入 ✓');
+}
+
 function addImgUrl(){
   var inp=document.getElementById('img-url-inp');
   if(!inp)return;
@@ -2276,12 +2274,67 @@ function renderSettings(){
   h+='<div style="background:var(--bg1);border:.5px solid var(--line);padding:24px;max-width:520px">';
   h+='<div style="font-size:8px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:12px">Export</div>';
   h+='<div style="font-size:12px;color:var(--text2);line-height:1.9;margin-bottom:16px">Download index.html with current content baked in. Upload to GitHub to update the live site.</div>';
+  h+='<button onclick="publishToGitHub()" style="width:100%;background:var(--accent);color:#0A0A0A;border:none;padding:14px;font-size:14px;cursor:pointer;font-family:var(--sans);letter-spacing:1px;margin-bottom:12px">🚀 一鍵發布到 GitHub</button>';
+  h+='<div style="font-size:11px;color:var(--text3);margin-bottom:8px">或手動下載後自行上傳：</div>';
   h+='<button class="nav-btn-fill" style="font-size:9px" onclick="downloadHTML()">'+si(P.dl,11)+'Download index.html</button></div>';
   document.getElementById('mainarea').innerHTML=h;
 }
 function svsettings(){var np=document.getElementById('sp').value;if(np)CP=np;CU=document.getElementById('su').value||CU;toast('已儲存');}
 
 // DOWNLOAD HTML
+var GH_TOKEN='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';
+var GH_REPO='taiarch001198-lab/uja-studio';
+var GH_FILE='index.html';
+var GH_BRANCH='main';
+
+function publishToGitHub(){
+  toast('準備發布…');
+  var data={
+    SC:SC,pinnedPorts:pinnedPorts||[],
+    PORTFOLIO:PORTFOLIO.map(function(p){
+      return{id:p.id,name:p.name,cat:p.cat,catName:p.catName,
+             area:p.area,year:p.year,color:p.color||'#888',desc:p.desc||'',imgs:p.imgs||[]};
+    }),
+    PROJECTS:PROJECTS||[],TEAM_MEMBERS:TEAM_MEMBERS||[],
+    FINANCE:FINANCE||{monthly:[],pending:0,note:''}
+  };
+  try{
+    var src=document.documentElement.outerHTML;
+    src=src.replace(/<script id="uja-data">[\s\S]*?<\/script>/g,'');
+    var scriptOpen='<scr'+'ipt id="uja-data">';
+    var scriptClose='<\/sc'+'ript>';
+    var rs=scriptOpen+'\n(function(){\nvar d='+JSON.stringify(data)+';\n'
+      +'document.addEventListener("DOMContentLoaded",function(){\n'
+      +'try{Object.assign(SC,d.SC);PORTFOLIO=d.PORTFOLIO;PROJECTS=d.PROJECTS;\n'
+      +'TEAM_MEMBERS=d.TEAM_MEMBERS;SC.team=d.TEAM_MEMBERS.map(function(m){return{name:m.name,role:m.role,color:m.color,init:m.init};});\n'
+      +'FINANCE=d.FINANCE;if(d.pinnedPorts)pinnedPorts=d.pinnedPorts;\n'
+      +'if(SC.accent)document.documentElement.style.setProperty("--accent",SC.accent);\n'
+      +'}catch(e){}\n});\n})();\n'+scriptClose;
+    src=src.replace('</body>',rs+'\n</body>');
+    toast('連接 GitHub…');
+    fetch('https://api.github.com/repos/'+GH_REPO+'/contents/'+GH_FILE+'?ref='+GH_BRANCH,{
+      headers:{'Authorization':'token '+GH_TOKEN,'Accept':'application/vnd.github.v3+json'}
+    })
+    .then(function(r){return r.json();})
+    .then(function(info){
+      var sha=info.sha;
+      var encoded=btoa(unescape(encodeURIComponent(src)));
+      toast('上傳中，請稍候…');
+      return fetch('https://api.github.com/repos/'+GH_REPO+'/contents/'+GH_FILE,{
+        method:'PUT',
+        headers:{'Authorization':'token '+GH_TOKEN,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+        body:JSON.stringify({message:'Update via admin panel',content:encoded,sha:sha,branch:GH_BRANCH})
+      });
+    })
+    .then(function(r){return r.json();})
+    .then(function(res){
+      if(res.commit){toast('✓ 發布成功！網站約 1 分鐘後更新');}
+      else{toast('發布失敗：'+(res.message||JSON.stringify(res)));}
+    })
+    .catch(function(e){toast('發布失敗：'+e.message);});
+  }catch(e){toast('發布失敗：'+e.message);}
+}
+
 function downloadHTML(){
   try{
     toast('準備下載…');
