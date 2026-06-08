@@ -2330,16 +2330,14 @@ var GH_FILE='index.html';
 var GH_BRANCH='main';
 
 function publishToGitHub(){
-  /* 取得 token */
   var tok=localStorage.getItem('uja_gh_token')||'';
   if(!tok){
-    tok=prompt('請輸入 GitHub Personal Access Token：\n（到 github.com/settings/tokens 產生，勾選 repo 權限）');
+    tok=prompt('請輸入 GitHub Personal Access Token：');
     if(!tok||!tok.trim()){toast('已取消');return;}
     tok=tok.trim();
     localStorage.setItem('uja_gh_token',tok);
   }
 
-  toast('準備發布…');
   var data={
     SC:SC,pinnedPorts:pinnedPorts||[],
     PORTFOLIO:PORTFOLIO.map(function(p){
@@ -2350,70 +2348,66 @@ function publishToGitHub(){
     FINANCE:FINANCE||{monthly:[],pending:0,note:''}
   };
 
+  var src=document.documentElement.outerHTML;
+  var scriptTag='<scr\x69pt id="uja-data">';
+  var closeTag='<\/sc\x72ipt>';
+  src=src.replace(new RegExp(scriptTag.replace('<scr\x69pt','<scr\\x69pt')+'[\\s\\S]*?'+closeTag,'g'),'');
+  var rs=scriptTag+'\n(function(){\nvar d='+JSON.stringify(data)+';\n'
+    +'document.addEventListener("DOMContentLoaded",function(){\n'
+    +'try{Object.assign(SC,d.SC);PORTFOLIO=d.PORTFOLIO;PROJECTS=d.PROJECTS;\n'
+    +'TEAM_MEMBERS=d.TEAM_MEMBERS;SC.team=d.TEAM_MEMBERS.map(function(m){return{name:m.name,role:m.role,color:m.color,init:m.init};});\n'
+    +'FINANCE=d.FINANCE;if(d.pinnedPorts)pinnedPorts=d.pinnedPorts;\n'
+    +'if(SC.accent)document.documentElement.style.setProperty("--accent",SC.accent);\n'
+    +'}catch(e){}\n});\n})();\n'+closeTag;
+  src=src.replace('</body>',rs+'\n</body>');
+
+  var encoded;
   try{
-    var src=document.documentElement.outerHTML;
-    src=src.replace(/<scr\x69pt id="uja-data">[\s\S]*?<\/script>/g,'');
-    var rs='<scr'+'ipt id="uja-data">\n(function(){\nvar d='+JSON.stringify(data)+';\n'
-      +'document.addEventListener("DOMContentLoaded",function(){\n'
-      +'try{Object.assign(SC,d.SC);PORTFOLIO=d.PORTFOLIO;PROJECTS=d.PROJECTS;\n'
-      +'TEAM_MEMBERS=d.TEAM_MEMBERS;SC.team=d.TEAM_MEMBERS.map(function(m){return{name:m.name,role:m.role,color:m.color,init:m.init};});\n'
-      +'FINANCE=d.FINANCE;if(d.pinnedPorts)pinnedPorts=d.pinnedPorts;\n'
-      +'if(SC.accent)document.documentElement.style.setProperty("--accent",SC.accent);\n'
-      +'}catch(e){}\n});\n})();\n'+'<\/scr'+'ipt>';
-    src=src.replace('</body>',rs+'\n</body>');
-
-    var repo='taiarch001198-lab/uja-studio';
-    var file='index.html';
-    var branch='main';
-    var apiBase='https://api.github.com/repos/'+repo+'/contents/'+file;
-    var headers={
-      'Authorization':'token '+tok,
-      'Accept':'application/vnd.github.v3+json',
-      'Content-Type':'application/json'
-    };
-
-    toast('連接 GitHub…');
-    fetch(apiBase+'?ref='+branch,{headers:headers})
-    .then(function(r){
-      if(!r.ok)throw new Error('HTTP '+r.status);
-      return r.json();
-    })
-    .then(function(info){
-      if(!info.sha)throw new Error('無法取得檔案 SHA：'+JSON.stringify(info));
-      toast('上傳中，請稍候…');
-      var encoded=btoa(unescape(encodeURIComponent(src)));
-      return fetch(apiBase,{
-        method:'PUT',
-        headers:headers,
-        body:JSON.stringify({
-          message:'Update via UJA Studio admin',
-          content:encoded,
-          sha:info.sha,
-          branch:branch
-        })
-      });
-    })
-    .then(function(r){return r.json();})
-    .then(function(res){
-      if(res.commit){
-        toast('✓ 發布成功！約 1 分鐘後網站更新');
-      } else if(res.message==='Bad credentials'){
-        localStorage.removeItem('uja_gh_token');
-        toast('Token 無效，請重新輸入');
-      } else {
-        toast('發布失敗：'+(res.message||'未知錯誤'));
-        console.error('publish error',res);
-      }
-    })
-    .catch(function(e){
-      toast('發布失敗：'+e.message);
-      console.error('publish catch',e);
-    });
+    encoded=btoa(unescape(encodeURIComponent(src)));
   }catch(e){
-    toast('發布失敗：'+e.message);
-    console.error('publish try catch',e);
+    toast('編碼失敗：'+e.message);return;
   }
+
+  var repo='taiarch001198-lab/uja-studio';
+  var branch='main';
+  var apiUrl='https://api.github.com/repos/'+repo+'/contents/index.html';
+  var headers={'Authorization':'token '+tok,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
+
+  toast('步驟 1/3：連接 GitHub…');
+  fetch(apiUrl+'?ref='+branch,{headers:headers})
+  .then(function(r){
+    toast('步驟 2/3：取得檔案資訊（狀態：'+r.status+'）');
+    if(r.status===401){localStorage.removeItem('uja_gh_token');throw new Error('Token 無效，請重新輸入');}
+    if(r.status===404){throw new Error('找不到檔案，請確認 repository 設定');}
+    if(!r.ok){throw new Error('HTTP 錯誤 '+r.status);}
+    return r.json();
+  })
+  .then(function(info){
+    if(!info.sha){throw new Error('無法取得 SHA：'+JSON.stringify(info).slice(0,100));}
+    toast('步驟 3/3：上傳中（'+Math.round(encoded.length/1024)+'KB）…');
+    return fetch(apiUrl,{
+      method:'PUT',
+      headers:headers,
+      body:JSON.stringify({message:'Update via UJA Studio admin',content:encoded,sha:info.sha,branch:branch})
+    });
+  })
+  .then(function(r){
+    if(!r.ok){throw new Error('上傳失敗，HTTP '+r.status);}
+    return r.json();
+  })
+  .then(function(res){
+    if(res.commit){
+      toast('✅ 發布成功！約 1 分鐘後網站更新');
+    } else {
+      toast('❌ 發布失敗：'+(res.message||JSON.stringify(res).slice(0,80)));
+    }
+  })
+  .catch(function(e){
+    toast('❌ '+e.message);
+    console.error('publish error',e);
+  });
 }
+
 
 
 
